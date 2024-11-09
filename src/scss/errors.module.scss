@@ -1,0 +1,32 @@
+@use "var";
+
+.root {
+  @include var.root();
+}
+
+.errors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  color: var.$third-color;
+  background: var.$black;
+}
+.left {
+  margin-right: 15%;
+  h1 {
+    background: var.$main-gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  a {
+    color: white;
+    border-bottom: 3px solid #ffffff;
+  }
+}
+.right {
+  img {
+    border-radius: 10%;
+  }
+}

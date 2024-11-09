@@ -1,0 +1,66 @@
+@use "../../scss/var";
+
+.chats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: var.$padding-elements 15px;
+  cursor: pointer;
+  transition: var.$transition-items;
+  .leftSide {
+    display: flex;
+    width: 100%;
+  }
+  &.active {
+    background: var.$second-note;
+    color: white;
+  }
+  .name_and_message {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 120px;
+  }
+  .name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .message {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: var.$font-size-small;
+  }
+  .time {
+    display: flex;
+    justify-content: flex-end;
+    white-space: nowrap;
+    width: 100%;
+    font-size: var.$font-size-small;
+  }
+  .avatar {
+    position: relative;
+    margin-right: var.$margin-elements;
+    .online,
+    .offline {
+      display: flex;
+      border-radius: 50%;
+      top: -5px;
+      right: -5px;
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      z-index: 1;
+    }
+    .online {
+      background: var.$third-color;
+    }
+    .offline {
+      background: var.$note;
+    }
+    img {
+      @include var.mini-avatars();
+    }
+  }
+}

@@ -1,0 +1,22 @@
+@use "../../scss/var";
+
+.input {
+  display: flex;
+  flex-direction: column;
+  label {
+
+  }
+  input {
+    color: var.$primary-color;
+    padding: var.$padding-elements;
+    border: 2px solid;
+    border-image-slice: 1;
+    border-image-source: var.$main-gradient;
+  }
+  input::placeholder,
+  input::-webkit-input-placeholder,
+  input:-moz-placeholder,
+  input::-ms-input-placeholder {
+    color: black;
+  }
+}
