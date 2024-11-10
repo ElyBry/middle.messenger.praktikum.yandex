@@ -17,8 +17,10 @@ const Chats =
                     </div>
                 </a>
                 <div class="${styles.search} ${styles.block}">
-                    {{> Input defValue="Поиск"}}
-                    {{> Button label="+"}}
+                    <form>
+                        {{> Input defValue="Поиск"}}
+                        {{> Button label="+"}}
+                    </form>
                 </div>
                 <div class="${styles.allChats} ${styles.block}">
                     {{> ListChats chats=chats}}

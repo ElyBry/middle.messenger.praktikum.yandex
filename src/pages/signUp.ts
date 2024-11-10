@@ -4,7 +4,7 @@ const signUp = `
     <div class=${styles.root}>
         <div class=${styles.auth}>
             <h1>Регистрация</h1>
-            <form >
+            <form onsubmit="">
                 <div class=${styles.left}>
                     {{> Input name="first_name" label="Имя" defValue="Иван" type="text" required="1"}}
                     {{> Input name="second_name" label="Фамилия" defValue="Иванов" type="text" required="1"}}
