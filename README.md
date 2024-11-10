@@ -17,3 +17,4 @@
 5) https://earnest-pony-f79726.netlify.app/profile - профиль
 6) https://earnest-pony-f79726.netlify.app/chats - чат
 # !!! Работает до 2025
+# Макет в UI
