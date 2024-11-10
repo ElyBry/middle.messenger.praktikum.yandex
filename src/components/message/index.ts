@@ -4,7 +4,7 @@ const Message =
     `
         <div class="${styles.message} {{#if me}} ${styles.me} {{/if}}">
             <div class="${styles.avatar}">
-                <img src="img/avatars/{{avatar}}"/>
+                <img src="img/avatars/{{avatar}}" alt="Аватар"/>
             </div>
             <div class="${styles.messages__item}">
                 <div class="${styles.messages__header}">

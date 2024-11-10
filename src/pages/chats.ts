@@ -7,7 +7,7 @@ const Chats =
                 <a href="/profile" class="${styles.me} ${styles.block}">
                     <div class="${styles.header}">
                         <div class="${styles.avatar}">
-                            <img src="/img/avatars/handsome-sensitive-red-head-man-smiling.jpg"/>
+                            <img src="/img/avatars/handsome-sensitive-red-head-man-smiling.jpg" alt="Аватар"/>
                         </div>
                         <div class="${styles.name}">
                             Егор Ермаков
@@ -27,7 +27,7 @@ const Chats =
                 <div class="${styles.message__window}">
                     <div class="${styles.header}">
                         <div class="${styles.avatar}">
-                            <img src="/img/avatars/business-man-by-skyscraper.jpg"/>
+                            <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
                         </div>
                         <div class="${styles.name}">
                             Иван Иванов

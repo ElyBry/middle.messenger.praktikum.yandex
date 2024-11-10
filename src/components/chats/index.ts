@@ -10,7 +10,7 @@ const Chats =
                     {{else}}
                         <div class="${styles.offline}"></div>
                     {{/isEqual}}
-                    <img src="img/avatars/{{ avatar }}" />
+                    <img src="img/avatars/{{ avatar }}" alt="Аватар" />
                 </div>
                 <div class="${styles.name_and_message}">
                     <div class="${styles.name}">

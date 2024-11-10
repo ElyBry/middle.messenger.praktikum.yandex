@@ -8,7 +8,7 @@ const Profile =
                     <div class=${styles.profile}>
                         <form onsubmit="">
                             <div class=${styles.block}>
-                                <img src="/img/avatars/business-man-by-skyscraper.jpg"/>
+                                <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
                                 {{> Input name="avatar" type="file" label="Аватар"}}
                             </div>
                             <div class=${styles.block}>
@@ -34,7 +34,7 @@ const Profile =
                 {{else}}
                     <div class=${styles.profile}>
                         <div class=${styles.block}>
-                            <img src="/img/avatars/business-man-by-skyscraper.jpg"/>
+                            <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
                         </div>
                         <div class=${styles.block}>
                             {{> Field name="Отображаемый ник" value="Егор"}}
