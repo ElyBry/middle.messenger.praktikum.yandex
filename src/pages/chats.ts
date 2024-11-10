@@ -6,21 +6,18 @@ const Chats =
             <div class="${styles.menu}">
                 <a href="/profile" class="${styles.me} ${styles.block}">
                     <div class="${styles.header}">
-                        
-                            <div class="${styles.avatar}">
-                                <img src="/img/avatars/handsome-sensitive-red-head-man-smiling.jpg"/>
-                            </div>
-                            <div class="${styles.name}">
-                                Егор Ермаков
-                            </div>
+                        <div class="${styles.avatar}">
+                            <img src="/img/avatars/handsome-sensitive-red-head-man-smiling.jpg"/>
+                        </div>
+                        <div class="${styles.name}">
+                            Егор Ермаков
+                        </div>
                         
                     </div>
                 </a>
                 <div class="${styles.search} ${styles.block}">
-                    <form>
-                        {{> Input defValue="Поиск"}}
-                        {{> Button label="+"}}
-                    </form>
+                    {{> Input defValue="Поиск"}}
+                    {{> Button label="+"}}
                 </div>
                 <div class="${styles.allChats} ${styles.block}">
                     {{> ListChats chats=chats}}

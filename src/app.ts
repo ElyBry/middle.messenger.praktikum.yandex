@@ -28,7 +28,7 @@ const pages: { [key: string]: [string, any?] } = {
     'signUp': [ Pages.signUp ],
     'signIn': [ Pages.signIn ],
     'profile': [ Pages.profile, {
-        isEditing: false,
+        isEditing: true,
     }],
     'chats': [ Pages.chats, {
         chats: [
