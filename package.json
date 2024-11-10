@@ -11,6 +11,11 @@
     "start": "npm run build && npm run dev"
   },
   "author": "ElyBry",
+  "license": "ISC",
+  "description": "",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
     "typescript": "~5.6.2",
@@ -21,7 +26,5 @@
     "sass": "^1.80.5",
     "vite-plugin-handlebars": "^2.0.0"
   },
-  "main": "src/app.ts",
-  "license": "ISC",
-  "description": ""
+  "main": "src/app.ts"
 }
