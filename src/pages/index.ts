@@ -1,6 +1,6 @@
 export { default as Page404 } from './404'
 export { default as Page500 } from './500'
-export { default as signUp } from './signUp'
-export { default as signIn } from './signIn'
+export { default as SignUp } from './SignUp.ts'
+export { default as SignIn } from './SignIn.ts'
 export { default as profile } from './profile'
 export { default as chats } from './chats'

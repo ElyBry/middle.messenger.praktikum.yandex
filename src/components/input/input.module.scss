@@ -13,10 +13,10 @@
     border-image-slice: 1;
     border-image-source: var.$main-gradient;
   }
-  input::placeholder,
-  input::-webkit-input-placeholder,
-  input:-moz-placeholder,
-  input::-ms-input-placeholder {
+  input::placeholder {
     color: black;
   }
+}
+.error {
+    color: var.$error-color;
 }

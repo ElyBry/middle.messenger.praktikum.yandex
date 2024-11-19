@@ -1,7 +1,7 @@
 @use "var";
 
 .root {
-  @include var.root();
+  @include var.root;
 }
 .allChats {
   width: 100%;
@@ -25,7 +25,9 @@
 .menu {
   max-width: 40vw;
   height: 100vh;
-  @include var.box-shadow();
+
+  @include var.box-shadow;
+
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -35,7 +37,7 @@
     justify-content: space-between;
     align-items: center;
     .avatar img{
-      @include var.mini-avatars();
+      @include var.mini-avatars;
     }
     .header {
       display: flex;
@@ -74,9 +76,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     @include var.box-shadow(5px,5px,15px);
     .avatar img{
-      @include var.mini-avatars();
+      @include var.mini-avatars;
+
       width: 65px;
       height: 65px;
     }
@@ -89,7 +93,8 @@
     .actions {
       font-size: var.$font-size-h2;
       cursor: pointer;
-      @include var.gradient();
+
+      @include var.gradient;
       @include var.animScaleHover(2);
     }
   }
@@ -109,6 +114,7 @@
     justify-content: space-between;
     padding: var.$padding-elements;
     width: 100%;
+
     @include var.box-shadow(5px,-5px,15px);
     .plus {
       display: flex;
@@ -118,7 +124,8 @@
       span {
         font-size: var.$font-size-h3;
         cursor: pointer;
-        @include var.gradient();
+
+        @include var.gradient;
         @include var.animScaleHover(2);
       }
     }

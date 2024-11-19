@@ -17,15 +17,17 @@
     display: flex;
     align-items: flex-end;
     img {
-      @include var.mini-avatars();
+      @include var.mini-avatars;
     }
   }
   .messages__item {
     padding: var.$padding-elements;
     margin-left: var.$margin-elements;
     border-radius: var.$border-radius-elements var.$border-radius-elements var.$border-radius-elements 0;
-    @include var.gradient();
-    -webkit-background-clip: unset;
+
+    @include var.gradient;
+
+    background-clip: unset;
     -webkit-text-fill-color: white;
     .messages__header {
       display: flex;

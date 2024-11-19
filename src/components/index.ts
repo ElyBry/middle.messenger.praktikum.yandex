@@ -1,6 +1,6 @@
-export { Button } from './button';
+export { ButtonElement } from './button';
 export { Icon } from './icon';
-export { Input } from './input';
+export { InputElement } from './input';
 export { Field } from './field';
 export { Chats } from './chats';
 export { ListChats } from './listChats';

@@ -1,9 +1,8 @@
-// Шрифты и сбросы
 @use "var";
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Tektur:wght@400..900&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Tektur:wght@400..900&display=swap';
 
 .root {
-  @include var.root();
+  @include var.root;
 }
 
 * {
@@ -15,7 +14,7 @@
 *,
 *::before,
 *::after {
-  font-family: "Tektur", serif;
+  font-family: Tektur, serif;
   font-optical-sizing: auto;
   font-style: normal;
   box-sizing: border-box;
