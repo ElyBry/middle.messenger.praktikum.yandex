@@ -90,3 +90,18 @@ $timeAnimation: .3s;
     transform: scale($scale);
   }
 }
+
+@mixin buttonBack() {
+  @include gradient();
+  position: absolute;
+  top: $padding-page;
+  right: $padding-page;
+  transition: $timeAnimation $setting;
+  cursor: pointer;
+  &:hover {
+    transform: scale($defScaleAnimation);
+  }
+  span {
+    font-size: $font-size-h1;
+  }
+}

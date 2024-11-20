@@ -13,6 +13,7 @@ interface InputElementProps {
     required?: boolean,
     min?: number,
     max?: number,
+    onEnter?: (e: FocusEvent) => void,
 }
 
 class InputElement extends Block{
@@ -22,7 +23,14 @@ class InputElement extends Block{
             Input: new Input({
                 ...props,
                 events: {
-                    blur: props.onBlur || (() => {})
+                    blur: props.onBlur || (() => {}),
+                    keyDown: (e: KeyboardEvent) => {
+                        if (e.key === 'Enter') {
+                            if (props.onEnter) {
+                                this.props.onEnter(e);
+                            }
+                        }
+                    }
                 }
             }),
             ErrorLine: new ErrorLine({

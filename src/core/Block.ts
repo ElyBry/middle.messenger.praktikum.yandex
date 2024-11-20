@@ -92,12 +92,24 @@ export default class Block {
         const children: Children = {};
         const props: Props = {};
 
-        Object.entries(propsAndChildren).forEach(([key, value]) => {
-            if (value instanceof Block) {
+        const processValue = (value: any, key: string) => {
+            if (Array.isArray(value)) {
+                value.forEach((item, index) => {
+                    if (item instanceof Block) {
+                        children[`${key}_${index}`] = item;
+                    } else {
+                        props[`${key}_${index}`] = item;
+                    }
+                });
+            } else if (value instanceof Block) {
                 children[key] = value;
             } else {
                 props[key] = value;
             }
+        };
+
+        Object.entries(propsAndChildren).forEach(([key, value]) => {
+            processValue(value, key);
         });
 
         return { children, props };
@@ -129,9 +141,12 @@ export default class Block {
 
         Object.values(this.children).forEach(child => {
             const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
-            const childContent = child.getContent();
-
-            stub?.replaceWith(childContent || '');
+            if (typeof child.getContent == 'function') {
+                const childContent = child.getContent();
+                stub?.replaceWith(childContent || '');
+            } else {
+                console.error(`Для ${child} getContent() не является функцией`);
+            }
         });
 
         if (this._element) {

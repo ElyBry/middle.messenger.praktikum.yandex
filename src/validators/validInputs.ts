@@ -12,6 +12,7 @@ const checkLogin = (value: string):{errorMessage: string} => {
     } if (onlyDigitsPattern.test(value)) {
         return {errorMessage: 'Логин не может состоять только из цифр'};
     }
+
     return {errorMessage: ''};
 
 }
@@ -23,6 +24,7 @@ const checkEmail = (value: string):{errorMessage: string} => {
     } if (!validPattern.test(value)) {
         return { errorMessage: 'Введите корректный адрес электронной почты' };
     }
+
     return { errorMessage: '' };
 
 }
@@ -34,8 +36,8 @@ const checkFirstSecondNames = (value: string):{errorMessage: string} => {
     } if (!validPattern.test(value)) {
         return {errorMessage: 'Имя должно начинаться с заглавной буквы и содержать только буквы, дефис'};
     }
-    return {errorMessage: ''};
 
+    return {errorMessage: ''};
 }
 
 const checkPhone = (value: string):{errorMessage: string} => {
@@ -47,6 +49,7 @@ const checkPhone = (value: string):{errorMessage: string} => {
     } else if (!validPattern.test(value)) {
         return {errorMessage: 'Телефон должен состоять только из цифр и может начинаться с плюса'};
     }
+
     return {errorMessage: ''};
 }
 
@@ -62,12 +65,14 @@ const checkPassword = (value: string, confirm?: string):{errorMessage: string} =
     } if (confirm && value !== confirm) {
         return { errorMessage: 'Пароли не совпадают' };
     }
+
     return {errorMessage: ''};
 }
 const checkMessage = (value: string):{errorMessage: string} => {
     if (value.length == 0) {
         return {errorMessage: 'Сообщение не должно быть пустым'}
     }
+
     return {errorMessage: ''};
 }
 

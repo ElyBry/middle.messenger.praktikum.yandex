@@ -35,14 +35,15 @@ const pages:Record<string, any> = {
     '500': [ Pages.Page500 ],
     'signIn': [ Pages.SignIn ],
     'signUp': [ Pages.SignUp ],
-    'profile': [ Pages.profile ],
+    'profile': [ Pages.Profile ],
     'chats': [ Pages.chats ],
 }
 
 
 document.addEventListener('click', e => {
     const target = e.target as HTMLElement;
-    const page = target.getAttribute('page');
+    const pageElement = target.closest('[page]');
+    const page = pageElement?.getAttribute('page');
     if (page) {
         navigate(page);
 

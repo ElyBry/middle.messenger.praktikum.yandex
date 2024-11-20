@@ -3,12 +3,12 @@ import styles from '../scss/signInUp.module.scss';
 import Block from "../core/Block.ts";
 import validInputs from "../validators/validInputs.ts";
 
-const {checkLogin, checkEmail, checkFirstSecondNames, checkPhone, checkPassword} = validInputs;
+const { checkLogin, checkEmail, checkFirstSecondNames, checkPhone, checkPassword } = validInputs;
 
 export default class SignUp extends Block {
     init() {
         const onChangeFirstNameBind = this.onChangeFirstName.bind(this);
-        const onChangeLastNameBind = this.onChangeLastName.bind(this);
+        const onChangeSecondNameBind = this.onChangeSecondName.bind(this);
         const onChangeEmailBind = this.onChangeEmail.bind(this);
         const onChangePhoneBind = this.onChangePhone.bind(this);
         const onChangeLoginBind = this.onChangeLogin.bind(this);
@@ -25,13 +25,13 @@ export default class SignUp extends Block {
             onBlur: onChangeFirstNameBind,
         });
 
-        const InputLastName = new InputElement({
-            name: "last_name",
+        const InputSecondName = new InputElement({
+            name: "second_name",
             label: "Фамилия",
             defValue: "Ivanov",
             type: "text",
             required: true,
-            onBlur: onChangeLastNameBind,
+            onBlur: onChangeSecondNameBind,
         });
 
         const InputPhone = new InputElement({
@@ -94,7 +94,7 @@ export default class SignUp extends Block {
         });
 
         this.props.first_name = '';
-        this.props.last_name = '';
+        this.props.second_name = '';
         this.props.email = '';
         this.props.phone = '';
         this.props.login = '';
@@ -103,7 +103,7 @@ export default class SignUp extends Block {
         this.children = {
             ...this.children,
             InputFirstName,
-            InputLastName,
+            InputSecondName,
             InputEmail,
             InputPhone,
             InputPasswordConfirm,
@@ -120,12 +120,12 @@ export default class SignUp extends Block {
         this.children.InputFirstName!.setProps(check);
         this.setProps({first_name: value});
     }
-    onChangeLastName(e: Event) {
+    onChangeSecondName(e: Event) {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkFirstSecondNames(value);
-        this.children.InputLastName!.setProps(check);
-        this.setProps({last_name: value});
+        this.children.InputSecondName!.setProps(check);
+        this.setProps({second_name: value});
     }
 
     onChangeEmail(e: Event) {
@@ -174,14 +174,14 @@ export default class SignUp extends Block {
     onRegister(e: Event) {
         e.preventDefault();
         const firstNameError = checkFirstSecondNames(this.props.first_name);
-        const lastNameError = checkFirstSecondNames(this.props.last_name);
+        const secondNameError = checkFirstSecondNames(this.props.second_name);
         const emailError = checkEmail(this.props.email);
         const phoneError = checkPhone(this.props.phone);
         const loginError = checkLogin(this.props.login);
         const passwordError = checkPassword(this.props.password, this.props.passwordConfirm);
-        if (firstNameError.errorMessage || lastNameError.errorMessage || emailError.errorMessage || phoneError.errorMessage || loginError.errorMessage || passwordError.errorMessage) {
+        if (firstNameError.errorMessage || secondNameError.errorMessage || emailError.errorMessage || phoneError.errorMessage || loginError.errorMessage || passwordError.errorMessage) {
             this.children.InputFirstName!.setProps(firstNameError);
-            this.children.InputLastName!.setProps(lastNameError);
+            this.children.InputSecondName!.setProps(secondNameError);
             this.children.InputEmail!.setProps(emailError);
             this.children.InputPhone!.setProps(phoneError);
             this.children.InputPassword!.setProps(passwordError);
@@ -193,7 +193,7 @@ export default class SignUp extends Block {
         alert("Все данные введены верно, более подробная информация в консоли");
         console.log({
             first_name: this.props.first_name,
-            last_name: this.props.last_name,
+            second_name: this.props.second_name,
             email: this.props.email,
             phone: this.props.phone,
             login: this.props.login,
@@ -209,7 +209,7 @@ export default class SignUp extends Block {
                     <form onsubmit="">
                         <div class=${styles.left}>
                             {{{ InputFirstName }}}
-                            {{{ InputLastName }}}
+                            {{{ InputSecondName }}}
                             {{{ InputLogin }}}
                             {{{ InputEmail }}}
                             {{{ InputPhone }}}
