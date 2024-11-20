@@ -9,5 +9,5 @@
   border-image-slice: 1;
 
   @include var.gradient;
-  @include var.animScaleHover;
+  @include var.anim-scale-hover;
 }
