@@ -19,7 +19,7 @@
   @include var.border-radius;
   .back {
     @include var.center-block;
-    @include var.buttonBack;
+    @include var.button-back;
   }
   .block {
     width: 100%;
