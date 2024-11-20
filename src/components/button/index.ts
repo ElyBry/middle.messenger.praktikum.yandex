@@ -36,4 +36,3 @@ export class ButtonElement extends Block {
         `
     }
 }
-

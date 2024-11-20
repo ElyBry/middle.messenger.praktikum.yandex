@@ -226,5 +226,3 @@ export default class SignUp extends Block {
         `
     }
 }
-
-

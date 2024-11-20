@@ -45,7 +45,7 @@ class InputElement extends Block{
         if (oldProps === newProps) {
             return false;
         }
-        this.children.ErrorLine.setProps(newProps);
+        this.setPropsForChildren(this.children.ErrorLine, newProps);
         return true;
     }
 
