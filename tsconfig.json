@@ -6,21 +6,16 @@
     "lib": ["ES2020", "ES6","DOM", "es2016", "DOM.Iterable"],
     "skipLibCheck": true,
 
-    /* Bundler mode */
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
 
-    /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    /* Yandex required parameters */
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
