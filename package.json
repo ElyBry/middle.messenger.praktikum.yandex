@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "build:prod": "webpack --mode production",
     "eslint": "eslint",
-    "slint": "stylelint",
+    "stylelint": "stylelint",
     "start": "npm run build && npm run dev"
   },
   "author": "ElyBry",
