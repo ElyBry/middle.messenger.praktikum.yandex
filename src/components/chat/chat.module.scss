@@ -38,7 +38,7 @@
       cursor: pointer;
 
       @include var.gradient;
-      @include var.animScaleHover();
+      @include var.anim-scale-hover;
     }
   }
   .chat {
@@ -69,7 +69,7 @@
         cursor: pointer;
 
         @include var.gradient;
-        @include var.animScaleHover(2);
+        @include var.anim-scale-hover(2);
       }
     }
     .send {
@@ -80,9 +80,6 @@
         height: 100%;
       }
     }
-    div:not(.plus) {
-      margin-right: var.$padding-elements;
-    }
     div {
       width: 100%;
       height: 100%;
@@ -90,6 +87,9 @@
         width: 100%;
         height: 100%;
       }
+    }
+    div:not(.plus) {
+      margin-right: var.$padding-elements;
     }
   }
 }

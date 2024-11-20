@@ -5,14 +5,6 @@
   justify-content: flex-start;
   padding: 10px 55px;
   transition: var.$transition-items;
-  &.me {
-    flex-direction: row-reverse;
-    .messages__item {
-      border-radius: var.$border-radius-elements var.$border-radius-elements 0 var.$border-radius-elements;
-      margin-left: 0;
-      margin-right: var.$margin-elements;
-    }
-  }
   .avatar {
     display: flex;
     align-items: flex-end;
@@ -39,6 +31,14 @@
       .time {
         font-size: var.$font-size-small;
       }
+    }
+  }
+  &.me {
+    flex-direction: row-reverse;
+    .messages__item {
+      border-radius: var.$border-radius-elements var.$border-radius-elements 0 var.$border-radius-elements;
+      margin-left: 0;
+      margin-right: var.$margin-elements;
     }
   }
 }

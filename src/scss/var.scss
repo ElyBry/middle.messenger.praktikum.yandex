@@ -4,7 +4,7 @@ $third-color: #8466a5;
 $black: #222629;
 $note: #474b4f;
 $second-note: #6b6e70;
-$error-color: #ff0000;
+$error-color: #ff00;
 $main-gradient: linear-gradient(90deg, $primary-color 0%, $secondary-color 50%, $third-color 100%);
 $margin-elements: 25px;
 $margin-h1: 12vh 0;
@@ -17,26 +17,26 @@ $font-size-h1: clamp(18px, 4vw + 2rem, 48px);
 $font-size-h2: clamp(16px, 3.5vw + 1.5rem, 42px);
 $font-size-h3: clamp(14px, 3vw + 1rem, 36px);
 $font-size-h4: clamp(12px, 2.5vw + 0.5rem, 24px);
-$defScaleAnimation: 1.1;
+$def-scale-animation: 1.1;
 $font-size-small: 12px;
 $size-icons: 54px;
 $border-radius-elements: 15px;
 
-// Тень
+/* Тень */
 
-$defX: 3px;
-$defY: 4px;
-$defBlur: 50px;
-$defRadius: 0;
+$def-x: 3px;
+$def-y: 4px;
+$def-blur: 50px;
+$def-radius: 0;
 $transition-items: .3s ease all;
 $setting: ease all;
-$timeAnimation: .3s;
+$time-animation: .3s;
 
 @mixin border-radius() {
   border-radius: 30px;
 }
 
-@mixin box-shadow($x: $defX, $y: $defY, $blur: $defBlur, $radius: $defRadius) {
+@mixin box-shadow($x: $def-x, $y: $def-y, $blur: $def-blur, $radius: $def-radius) {
   box-shadow: $x $y $blur $radius rgb(34 60 80 / 20%);
 }
 
@@ -84,22 +84,23 @@ $timeAnimation: .3s;
   -webkit-text-fill-color: transparent;
 }
 
-@mixin animScaleHover($scale: $defScaleAnimation,$timeAnimation: $timeAnimation, $setting : $setting) {
-  transition: $timeAnimation $setting;
+@mixin anim-scale-hover($scale: $def-scale-animation, $time-animation: $time-animation, $setting : $setting) {
+  transition: $time-animation $setting;
   &:hover {
     transform: scale($scale);
   }
 }
 
-@mixin buttonBack() {
-  @include gradient();
+@mixin button-back() {
+  @include gradient;
+
   position: absolute;
   top: $padding-page;
   right: $padding-page;
-  transition: $timeAnimation $setting;
+  transition: $time-animation $setting;
   cursor: pointer;
   &:hover {
-    transform: scale($defScaleAnimation);
+    transform: scale($def-scale-animation);
   }
   span {
     font-size: $font-size-h1;
