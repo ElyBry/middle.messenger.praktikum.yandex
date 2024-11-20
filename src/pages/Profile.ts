@@ -175,7 +175,7 @@ export default class Profile extends Block {
         const target = e.target as HTMLInputElement;
         const value = target.value;
         const check = checkFirstSecondNames(value);
-        this.children.InputDisplayName!.setProps(check);
+        this.setPropsForChildren(this.children.InputDisplayName, check);
         this.setProps({display_name: value});
     }
 
@@ -183,14 +183,14 @@ export default class Profile extends Block {
         const target = e.target as HTMLInputElement;
         const value = target.value;
         const check = checkFirstSecondNames(value);
-        this.children.InputFirstName!.setProps(check);
+        this.setPropsForChildren(this.children.InputFirstName, check);
         this.setProps({first_name: value});
     }
     onChangeSecondName(e: Event) {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkFirstSecondNames(value);
-        this.children.InputSecondName!.setProps(check);
+        this.setPropsForChildren(this.children.InputSecondName, check);
         this.setProps({second_name: value});
     }
 
@@ -198,14 +198,14 @@ export default class Profile extends Block {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkEmail(value);
-        this.children.InputEmail!.setProps(check);
+        this.setPropsForChildren(this.children.InputEmail, check);
         this.setProps({email: value});
     }
     onChangePhone(e: Event) {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkPhone(value);
-        this.children.InputPhone!.setProps(check);
+        this.setPropsForChildren(this.children.InputPhone, check);
         this.setProps({phone: value});
     }
 
@@ -213,7 +213,7 @@ export default class Profile extends Block {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkLogin(value);
-        this.children.InputLogin!.setProps(check);
+        this.setPropsForChildren(this.children.InputLogin, check);
         this.setProps({login: value});
     }
 
@@ -222,8 +222,8 @@ export default class Profile extends Block {
         const value = target.value;
         const confirm = this.props.passwordConfirm || '';
         const check = checkPassword(value, confirm);
-        this.children.InputPasswordConfirm!.setProps(check);
-        this.children.InputPassword!.setProps(check);
+        this.setPropsForChildren(this.children.InputPasswordConfirm, check);
+        this.setPropsForChildren(this.children.InputPassword, check);
         this.setProps({password: value});
     }
 
@@ -232,8 +232,8 @@ export default class Profile extends Block {
         const value = target.value;
         const confirm = this.props.password || '';
         const check = checkPassword(value, confirm);
-        this.children.InputPassword!.setProps(check);
-        this.children.InputPasswordConfirm!.setProps(check);
+        this.setPropsForChildren(this.children.InputPasswordConfirm, check);
+        this.setPropsForChildren(this.children.InputPassword, check);
         this.setProps({passwordConfirm: value});
     }
 
@@ -267,10 +267,9 @@ export default class Profile extends Block {
         for (const field of fieldsToValidate) {
             if (this.props[field.name]) {
                 countChanges++;
-                const error = field.validator(this.props[field.name]);
-                console.log(error);
+                const error = field.validator(this.props[field.name], this.props[field.name]);
                 if (error.errorMessage) {
-                    this.children[`Input${this.capitalizeFirstLetter(field.name)}`]?.setProps(error);
+                    this.setPropsForChildren(this.children[`Input${this.capitalizeFirstLetter(field.name)}`], error);
                     return;
                 }
                 inputs[field.name as keyof UserInputs] = this.props[field.name];

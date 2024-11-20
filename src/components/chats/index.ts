@@ -24,7 +24,6 @@ export class Chats extends Block {
     }
 
     render() {
-        // console.log(this);
         return `
             <div class="${styles.chats} {{#if active}} ${styles.active} {{/if}}">
                 <div class="${styles.leftSide}">

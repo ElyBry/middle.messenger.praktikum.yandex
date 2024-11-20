@@ -1,4 +1,5 @@
-export default [
+
+const dialogsMock =  [
     {name: "Иван Иванов", avatar: "business-man-by-skyscraper.jpg", time: "11:12", message: "Привет!"},
     {name: "Иван Иванов", avatar: "business-man-by-skyscraper.jpg", time: "11:13", message: "Как дела? Тут такое дело, нужна помощь с написанием большого сообщения, чтобы проверить как оно выглядит, не сможешь ли ты с этим помочь?"},
     {name: "Егор Ермаков", me: true, avatar: "handsome-sensitive-red-head-man-smiling.jpg", time: "11:14", message: "Привееет! Всё кул! Да, могу помочь"},
@@ -21,3 +22,4 @@ export default [
     {name: "Егор Ермаков", me: true, avatar: "handsome-sensitive-red-head-man-smiling.jpg", time: "11:26", message: "Можно использовать специальные сайты или просто поискать в гугле 'эмодзи'."},
     {name: "Иван Иванов", avatar: "business-man-by-skyscraper.jpg", time: "11:27", message: "Здорово! У меня возник вопрос: если я использую текст из книги и кто-то заметит, будет ли это проблемой?"}
 ];
+export default dialogsMock;

@@ -117,14 +117,14 @@ export default class SignUp extends Block {
         const target = e.target as HTMLInputElement;
         const value = target.value;
         const check = checkFirstSecondNames(value);
-        this.children.InputFirstName!.setProps(check);
+        this.setPropsForChildren(this.children.InputFirstName, check);
         this.setProps({first_name: value});
     }
     onChangeSecondName(e: Event) {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkFirstSecondNames(value);
-        this.children.InputSecondName!.setProps(check);
+        this.setPropsForChildren(this.children.InputSecondName, check);
         this.setProps({second_name: value});
     }
 
@@ -132,14 +132,14 @@ export default class SignUp extends Block {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkEmail(value);
-        this.children.InputEmail!.setProps(check);
+        this.setPropsForChildren(this.children.InputEmail, check);
         this.setProps({email: value});
     }
     onChangePhone(e: Event) {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkPhone(value);
-        this.children.InputPhone!.setProps(check);
+        this.setPropsForChildren(this.children.InputPhone, check);
         this.setProps({phone: value});
     }
 
@@ -147,27 +147,27 @@ export default class SignUp extends Block {
         const target = e.target as HTMLInputElement
         const value = target.value;
         const check = checkLogin(value);
-        this.children.InputLogin!.setProps(check);
+        this.setPropsForChildren(this.children.InputLogin, check);
         this.setProps({login: value});
     }
 
     onChangePassword(e: Event) {
         const target = e.target as HTMLInputElement
         const value = target.value;
-        const confirm = this.props.passwordConfirm || '';
+        const confirm = this.props.passwordConfirm;
         const check = checkPassword(value, confirm);
-        this.children.InputPasswordConfirm!.setProps(check);
-        this.children.InputPassword!.setProps(check);
+        this.setPropsForChildren(this.children.InputPassword, check);
+        this.setPropsForChildren(this.children.InputPasswordConfirm, check);
         this.setProps({password: value});
     }
 
     onChangePasswordConfirm(e: Event) {
         const target = e.target as HTMLInputElement
         const value = target.value;
-        const confirm = this.props.password || '';
+        const confirm = this.props.password;
         const check = checkPassword(value, confirm);
-        this.children.InputPassword!.setProps(check);
-        this.children.InputPasswordConfirm!.setProps(check);
+        this.setPropsForChildren(this.children.InputPassword, check);
+        this.setPropsForChildren(this.children.InputPasswordConfirm, check);
         this.setProps({passwordConfirm: value});
     }
 
@@ -180,13 +180,13 @@ export default class SignUp extends Block {
         const loginError = checkLogin(this.props.login);
         const passwordError = checkPassword(this.props.password, this.props.passwordConfirm);
         if (firstNameError.errorMessage || secondNameError.errorMessage || emailError.errorMessage || phoneError.errorMessage || loginError.errorMessage || passwordError.errorMessage) {
-            this.children.InputFirstName!.setProps(firstNameError);
-            this.children.InputSecondName!.setProps(secondNameError);
-            this.children.InputEmail!.setProps(emailError);
-            this.children.InputPhone!.setProps(phoneError);
-            this.children.InputPassword!.setProps(passwordError);
-            this.children.InputPasswordConfirm!.setProps(passwordError);
-            this.children.InputLogin!.setProps(loginError);
+            this.setPropsForChildren(this.children.InputFirstName, firstNameError);
+            this.setPropsForChildren(this.children.InputSecondName, secondNameError);
+            this.setPropsForChildren(this.children.InputEmail, emailError);
+            this.setPropsForChildren(this.children.InputPhone, phoneError);
+            this.setPropsForChildren(this.children.InputPassword, passwordError);
+            this.setPropsForChildren(this.children.InputPasswordConfirm, passwordError);
+            this.setPropsForChildren(this.children.InputLogin, loginError);
             return ;
         }
 

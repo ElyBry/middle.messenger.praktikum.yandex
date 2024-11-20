@@ -1,9 +1,18 @@
 import Block from "../../core/Block.ts";
 
+interface InputProps {
+    events?: {
+        keydown?: (e: KeyboardEvent) => void,
+        input?: (e :FocusEvent) => void,
+        blur?: (e: FocusEvent) => void
+    },
+}
+
 class Input extends Block{
-    constructor(props:{}) {
+    constructor(props: InputProps) {
         super(props)
     }
+
     render() {
         return `
             <input type="{{type}}"

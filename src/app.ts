@@ -4,8 +4,12 @@ import Handlebars from 'handlebars';
 import * as Pages from './pages';
 import * as Components from './components'
 
+interface Template<T> {
+    (context: T): string;
+}
+
 Object.entries(Components).forEach(([ name, template ]) => {
-    Handlebars.registerPartial(name, template);
+    Handlebars.registerPartial(name, template as unknown as Template<any>);
 });
 
 Handlebars.registerHelper('isEqual', (v1,v2,options) => {

@@ -4,8 +4,7 @@ import { Input } from "./input.ts";
 import { ErrorLine } from "./error.ts";
 
 interface InputElementProps {
-    onBlur?: (event: FocusEvent) => void;
-    errorText?: string;
+    errorText?: string,
     name: string,
     label?: string,
     defValue?: string,
@@ -14,6 +13,8 @@ interface InputElementProps {
     min?: number,
     max?: number,
     onEnter?: (e: FocusEvent) => void,
+    onBlur?: (event: FocusEvent) => void;
+    onChange?: (event: FocusEvent) => void;
 }
 
 class InputElement extends Block{
@@ -24,13 +25,14 @@ class InputElement extends Block{
                 ...props,
                 events: {
                     blur: props.onBlur || (() => {}),
-                    keyDown: (e: KeyboardEvent) => {
+                    keydown: (e: KeyboardEvent) => {
                         if (e.key === 'Enter') {
                             if (props.onEnter) {
                                 this.props.onEnter(e);
                             }
                         }
-                    }
+                    },
+                    input: props.onChange,
                 }
             }),
             ErrorLine: new ErrorLine({

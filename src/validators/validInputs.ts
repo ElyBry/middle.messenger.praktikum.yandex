@@ -53,7 +53,7 @@ const checkPhone = (value: string):{errorMessage: string} => {
     return {errorMessage: ''};
 }
 
-const checkPassword = (value: string, confirm?: string):{errorMessage: string} => {
+const checkPassword = (value: string, confirm: string): {errorMessage: string} => {
     if (value.length < 8) {
         return {errorMessage: 'Минимальная длина пароля 8 символов'};
     } if (value.length > 40) {
@@ -62,12 +62,13 @@ const checkPassword = (value: string, confirm?: string):{errorMessage: string} =
         return { errorMessage: 'Пароль должен содержать хотя бы одну заглавную букву' };
     } if (!/\d/.test(value)) {
         return { errorMessage: 'Пароль должен содержать хотя бы одну цифру' };
-    } if (confirm && value !== confirm) {
+    } if (value !== confirm) {
         return { errorMessage: 'Пароли не совпадают' };
     }
 
     return {errorMessage: ''};
 }
+
 const checkMessage = (value: string):{errorMessage: string} => {
     if (value.length == 0) {
         return {errorMessage: 'Сообщение не должно быть пустым'}

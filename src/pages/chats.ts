@@ -1,19 +1,18 @@
 import styles from '../scss/chats.module.scss';
 import Block from "../core/Block.ts";
-import {ButtonElement, InputElement, ListChats} from "../components";
+import {ButtonElement, Chat, InputElement, ListChats} from "../components";
 import chatsMock from "../mocks/chatsMock.ts";
+import dialogsMock from "../mocks/dialogsMock.ts";
 
 export default class Chats extends Block{
     init() {
-        const onChangeInputSearchBind = this.onChangeInputSearch.bind(this);
         const onEnterInputSearchBind = this.onEnterInputSearch.bind(this);
         const onClickButtonAddBind = this.onClickButtonAdd.bind(this);
 
         const InputSearch = new InputElement({
             name: "search",
             type: "text",
-            onBlur: onChangeInputSearchBind,
-            onEnter: onEnterInputSearchBind
+            onEnter: onEnterInputSearchBind,
         });
 
         const ListChatsElement = new ListChats({
@@ -27,16 +26,24 @@ export default class Chats extends Block{
             onClick: onClickButtonAddBind,
         });
 
-        this.props.openChat = false;
-        this.props.openChatId = 0;
+        this.props.search = '';
+        this.props.openChat = true;
+        this.props.openChatId = -1;
         this.props.user = {};
         this.props.user.name = "Егор Ермаков";
+
+        const ChatElement = new Chat({
+            chatInfo: dialogsMock,
+            openChat: this.props.openChat,
+            openChatId: this.props.openChatId,
+        })
 
         this.children = {
             ...this.children,
             InputSearch,
             ButtonAddChat,
             ListChatsElement,
+            ChatElement
         }
     }
 
@@ -44,23 +51,19 @@ export default class Chats extends Block{
         console.log("Добавляем пользователя");
     }
 
-    onEnterInputSearch() {
-        console.log("Выполняется поиск...");
-    }
-
-    onChangeInputSearch(e: Event) {
-        const target = e.target as HTMLInputElement
+    onEnterInputSearch(e: Event) {
+        const target = e.target as HTMLInputElement;
         const value = target.value;
-
+        console.log(`Выполняется поиск... ${value}`);
         this.setProps({search: value});
-    };
+    }
 
     render() {
         return `
             <div>
                 <div class="${styles.chats}">
                     <div class="${styles.menu}">
-                        <a href="/profile" class="${styles.me} ${styles.block}">
+                        <a href="#" page="profile" class="${styles.me} ${styles.block}">
                             <div class="${styles.header}">
                                 <div class="${styles.avatar}">
                                     {{> Avatar img="handsome-sensitive-red-head-man-smiling.jpg" }}
@@ -78,35 +81,7 @@ export default class Chats extends Block{
                             {{{ ListChatsElement }}}
                         </div>
                     </div>
-                    {{#if openChat }}
-                        <div class="${styles.message__window}">
-                            <div class="${styles.header}">
-                                <div class="${styles.avatar}">
-                                    {{> Avatar img="business-man-by-skyscraper.jpg" }}
-                                </div>
-                                <div class="${styles.name}">
-                                    Иван Иванов
-                                </div>
-                                <div class="${styles.actions}">
-                                    {{> Icon name="settings"}}
-                                </div>
-                            </div>
-                            <div class="${styles.chat}">
-                                {{#each messages}}
-                                    {{> Message}}
-                                {{/each}}
-                            </div>
-                            <div class="${styles.message__send}">
-                                <div class="${styles.plus}">
-                                    {{> Icon name="add"}}
-                                </div>
-                                {{> Input defValue="Напишите сообщение"}}
-                                {{> Button icon="send"}}
-                            </div>
-                        </div>
-                    {{else}}
-                        <div class="${styles.no__chat}">Выберите чат, чтобы отправить сообщение</div>
-                    {{/if}}
+                    {{{ ChatElement }}}
                 </div>
             </div>
         `

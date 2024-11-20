@@ -18,7 +18,6 @@ const config = [
             '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-unused-vars': 'warn',
             'no-var': 'error',
-            'no-emit': 'error',
             'semi': 'error',
             'indent': 'error',
             'no-multi-spaces': 'error',

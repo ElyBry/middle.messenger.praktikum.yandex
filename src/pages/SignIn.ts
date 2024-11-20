@@ -53,14 +53,14 @@ export default class SignIn extends Block {
         const target = e.target as HTMLInputElement;
         const value = target.value;
         const check = checkLogin(value);
-        this.children.InputLogin.setProps(check);
+        this.setPropsForChildren(this.children.InputLogin, check);
         this.setProps({login: value});
     }
     onChangePassword(e: Event) {
         const target = e.target as HTMLInputElement;
         const value = target.value;
-        const check = checkPassword(value);
-        this.children.InputPassword.setProps(check);
+        const check = checkPassword(value, value);
+        this.setPropsForChildren(this.children.InputPassword, check);
         this.setProps({password: value});
     }
 
@@ -68,11 +68,11 @@ export default class SignIn extends Block {
         e.preventDefault();
 
         const errorLogin = checkLogin(this.props.login);
-        const errorPassword = checkPassword(this.props.password);
+        const errorPassword = checkPassword(this.props.password, this.props.password);
 
         if (errorLogin.errorMessage || errorPassword.errorMessage) {
-            this.children.InputLogin!.setProps(errorLogin);
-            this.children.InputPassword!.setProps(errorPassword);
+            this.setPropsForChildren(this.children.InputLogin, errorLogin);
+            this.setPropsForChildren(this.children.InputPassword, errorPassword);
             return;
         }
 
