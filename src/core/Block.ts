@@ -10,7 +10,7 @@ interface Children {
     [key: string]: Block | Block[];
 }
 
-export default class Block {
+export default abstract class Block<T extends Props = Props> {
     static EVENTS = {
         INIT: "init",
         FLOW_CDM: "flow:component-did-mount",
@@ -20,7 +20,7 @@ export default class Block {
 
     private _element: HTMLElement | null = null;
     private _id = nanoid(6);
-    props: Props;
+    props: T;
     children: Children;
     name: string;
     eventBus;
@@ -28,7 +28,7 @@ export default class Block {
     constructor(propsWithChildren: Props & { children?: Children} = {}) {
         const eventBus = new EventBus();
         const {props, children} = this._getChildrenAndProps(propsWithChildren);
-        this.props = this._makePropsProxy({ ...props });
+        this.props = this._makePropsProxy({ ...props }) as T;
         this.children = children;
         this.name = ''
 
@@ -45,6 +45,14 @@ export default class Block {
         Object.keys(events).forEach(eventName => {
             this._element!.addEventListener(eventName, events[eventName]);
         })
+    }
+
+    _removeEvents() {
+        const { events = {} } = this.props;
+
+        Object.keys(events).forEach((eventName) => {
+            this._element?.removeEventListener(eventName, events[eventName]);
+        });
     }
 
     setPropsForChildren(children: Block | Block[], newProps: any) {
@@ -133,13 +141,13 @@ export default class Block {
         return this._element;
     }
 
-    private _render() {
-        const propsAndStubs = { ...this.props };
+    private _compile() {
+        const propsAndStubs: { [key: string]: any } = { ...this.props };
 
         Object.entries(this.children).forEach(([key, child]) => {
             if (Array.isArray(child)) {
                 propsAndStubs[key] = child.map(
-                    (component) => `<div data-id="${component._id}"></div>`,
+                    (component) => `<div data-id="${component._id}"></div>`
                 );
             } else {
                 propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
@@ -169,6 +177,13 @@ export default class Block {
                 }
             }
         });
+
+        return newElement;
+    }
+
+    private _render() {
+        this._removeEvents();
+        const newElement = this._compile();
 
         if (this._element) {
             this._element.replaceWith(newElement);

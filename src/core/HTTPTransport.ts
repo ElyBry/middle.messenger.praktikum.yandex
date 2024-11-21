@@ -14,6 +14,8 @@ type Options = {
     tries?: number;
 };
 
+type HTTPMethod = (url: string, options?: Options) => Promise<unknown>;
+
 const queryStringify = (data: Record<string, any>): string => {
     const keys = Object.keys(data);
     return keys.reduce((result, key, index) => {
@@ -22,23 +24,23 @@ const queryStringify = (data: Record<string, any>): string => {
 }
 
 class HTTPTransport {
-    get = (url: string, options: Options = {}) => {
+    get: HTTPMethod = (url, options = {}) => {
         return this.request(url, {...options, method: METHODS.GET}, options.timeout);
     };
-    post = (url: string, options: Options = {}) => {
+    post: HTTPMethod = (url, options = {}) => {
         return this.request(url, {...options, method: METHODS.POST}, options.timeout);
     };
-    put = (url: string, options: Options = {}) => {
+    put: HTTPMethod = (url, options = {}) => {
         return this.request(url, {...options, method: METHODS.PUT}, options.timeout);
     };
-    patch = (url: string, options: Options = {}) => {
+    patch: HTTPMethod = (url, options = {}) => {
         return this.request(url, {...options, method: METHODS.PATCH}, options.timeout);
     };
-    delete = (url: string, options: Options = {}) => {
+    delete: HTTPMethod = (url, options = {}) => {
         return this.request(url, {...options, method: METHODS.DELETE}, options.timeout);
     };
 
-    private fetchWithRetry = (url: string, options: Options = {}): Promise<Response> => {
+    private fetchWithRetry: HTTPMethod = (url, options = {}) => {
         const { tries = 1 } = options;
 
         const onError = (err: Error) => {
