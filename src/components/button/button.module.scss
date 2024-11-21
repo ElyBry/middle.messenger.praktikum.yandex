@@ -1,11 +1,13 @@
 @use "../../scss/var";
 
 .button {
-  @include var.center-block();
+  @include var.center-block;
+
   cursor: pointer;
   padding: var.$padding-elements;
   border: 2px solid;
   border-image-slice: 1;
-  @include var.gradient();
-  @include var.animScaleHover();
+
+  @include var.gradient;
+  @include var.anim-scale-hover;
 }

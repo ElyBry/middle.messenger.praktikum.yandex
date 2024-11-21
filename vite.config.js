@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import handlebars from "vite-plugin-handlebars";
+import { defineConfig } from 'vite';
+import handlebars from 'vite-plugin-handlebars';
 
 export default defineConfig({
     root: '',
@@ -10,4 +10,4 @@ export default defineConfig({
         outDir: 'dist',
     },
     plugins: [handlebars()],
-})
+});
