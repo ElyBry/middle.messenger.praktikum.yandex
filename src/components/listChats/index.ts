@@ -18,17 +18,21 @@ type ChatsProps = ChatProps[];
 interface ListElementProps {
     chatsList: ChatsProps,
     onClick?: (event: FocusEvent) => void,
+    onSelectChat?: (event: number) => void,
 }
 
 export class ListChats extends Block {
     constructor(props: ListElementProps) {
         super({
             ...props,
+            openChatId: -1,
+            openChat: false,
             Chats: props.chatsList.map(
                 (chatProps) =>
                     new Chats({
                         ...chatProps,
                         onClick: () => {
+                            this.props.onSelectChat(chatProps.id);
                             this.setProps({ openChatId: chatProps.id });
                             this.setProps({ openChat: true});
                         },

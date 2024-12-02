@@ -1,13 +1,16 @@
 @use "../../scss/var";
 
-.button {
-  @include var.center-block;
-
-  cursor: pointer;
+.bubble {
+  background: var.$black;
   padding: var.$padding-elements;
-  border: 2px solid;
-  border-image-slice: 1;
+  border-radius: var.$border-radius-elements;
+  opacity: 0.9;
+  color: white;
+  .item {
+    width: 100%;
+    height: 100%;
+    .text {
 
-  @include var.gradient;
-  @include var.anim-scale-hover;
+    }
+  }
 }

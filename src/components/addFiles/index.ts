@@ -1,38 +1,32 @@
-import styles from './button.module.scss';
+import styles from './addFiles.module.scss';
 import Block from "../../core/Block.ts";
 
-interface ButtonElementProps {
-    label: string,
-    type?: string,
-    icon?: string,
-    onClick?: (event: FocusEvent) => void,
-    onHover?: {
-        mouseover: (event: FocusEvent) => void,
-        mouseout: (event: FocusEvent) => void,
-    },
+interface AddFilesProps {
+
 }
 
-export class ButtonElement extends Block {
-    constructor(props: ButtonElementProps) {
+export class AddFiles extends Block {
+    constructor(props: AddFilesProps) {
         super({
-            ...props,
-            events: {
-                click: props.onClick,
-                ...(props.onHover ? {
-                    mouseover: props.onHover.mouseover,
-                    mouseout: props.onHover.mouseout,
-                } : {})
-            }
+            ...props
         });
     }
     render() {
         return `
-            <button class="${styles.button}" type="{{type}}">
-                {{label}}
-                {{#if icon}}
-                    <span class="material-symbols-outlined">{{icon}}</span>
-                {{/if}}
-            </button>
+            <div class=${styles.bubble}>
+                <div class=${styles.item}>
+                    {{> Icon name="add_a_photo" }}
+                    <span class=${styles.text}>Фото или видео</span>
+                </div>
+                <div class=${styles.item}>
+                    {{> Icon name="note_add" }}
+                    <span class=${styles.text}>Файл</span>
+                </div>
+                <div class=${styles.item}>
+                    {{> Icon name="add_task" }}
+                    <span class=${styles.text}>Опрос</span>
+                </div>
+            </div>
         `
     }
 }

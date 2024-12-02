@@ -8,6 +8,7 @@ export default class Chats extends Block{
     init() {
         const onEnterInputSearchBind = this.onEnterInputSearch.bind(this);
         const onClickButtonAddBind = this.onClickButtonAdd.bind(this);
+        const onSelectChatBind = this.onSelectChat.bind(this);
 
         const InputSearch = new InputElement({
             name: "search",
@@ -17,6 +18,7 @@ export default class Chats extends Block{
 
         const ListChatsElement = new ListChats({
             chatsList: chatsMock,
+            onSelectChat: onSelectChatBind,
         });
 
         const ButtonAddChat = new ButtonElement({
@@ -27,8 +29,9 @@ export default class Chats extends Block{
         });
 
         this.props.search = '';
-        this.props.openChat = true;
+        this.props.openChat = false;
         this.props.openChatId = -1;
+        this.props.openAddUser = false;
         this.props.user = {};
         this.props.user.name = "Егор Ермаков";
 
@@ -48,7 +51,16 @@ export default class Chats extends Block{
     }
 
     onClickButtonAdd() {
-        console.log("Добавляем пользователя");
+        this.setProps({openAddUser: !this.props.openAddUser});
+        console.log("Добавляем пользователя", !this.props.openAddUser);
+    }
+
+    onSelectChat(chatId: number) {
+        this.setPropsForChildren(this.children.ChatElement,{
+            openChatId: chatId,
+            openChat: true,
+        });
+        console.log(`ID: ${chatId}`);
     }
 
     onEnterInputSearch(e: Event) {

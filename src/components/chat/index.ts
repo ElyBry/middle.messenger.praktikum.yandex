@@ -3,6 +3,7 @@ import Block from "../../core/Block.ts";
 import {Message} from "../message";
 import {InputElement} from "../input";
 import {ButtonElement} from "../button";
+import {AddFiles} from "../addFiles";
 
 interface ChatInfoProps {
     name: string,
@@ -24,6 +25,8 @@ export class Chat extends Block{
     constructor(props: ChatElementProps) {
         super({
             ...props,
+            openAddFiles: false,
+            openSettings: true,
             messages: props.chatInfo.map(
                 (chatProps: ChatInfoProps) =>
                     new Message({
@@ -34,21 +37,27 @@ export class Chat extends Block{
     }
     init() {
         const onClickButtonSendBind = this.onClickButtonSend.bind(this);
+        const onClickButtonSettingsBind = this.onClickButtonSettings.bind(this);
         const onChangeMessageBind = this.onChangeMessage.bind(this);
+        const onEnterMessageBind = this.onEnterMessage.bind(this);
         const onHoverAddBind = this.onHoverAdd.bind(this);
         const offHoverAddBind = this.offHoverAdd.bind(this);
+
+        const AddFilesBubble = new AddFiles({});
 
         const InputMessage = new InputElement({
             name: "",
             defValue: "Введите сообщение...",
             type: "text",
             onChange: onChangeMessageBind,
+            onEnter: onEnterMessageBind,
         })
 
         const ButtonOptions = new ButtonElement({
             label: "",
             type: "open",
             icon: "settings",
+            onClick: onClickButtonSettingsBind,
         })
 
         const ButtonAdd = new ButtonElement({
@@ -74,23 +83,38 @@ export class Chat extends Block{
             ButtonSend,
             ButtonOptions,
             ButtonAdd,
+            AddFilesBubble
         };
     }
     onHoverAdd() {
-        this.setProps({openSettings: true});
+        this.setProps({openAddFiles: true});
     }
 
     offHoverAdd() {
         setTimeout(() => {
-            this.setProps({openSettings: false});
-        }, 500);
+            this.setProps({openAddFiles: false});
+        }, 1000);
     }
+    onEnterMessage(e: Event) {
+        const target = e.target as HTMLInputElement;
+        const value = target.value;
 
+        if (!value) {
+            console.log(`Сообщение пустое`);
+            return;
+        }
+        console.log(`Отправляем сообщение ${value}`);
+    }
     onChangeMessage(e: Event) {
+        e.preventDefault();
         const target = e.target as HTMLInputElement;
         const value = target.value;
 
         this.setProps({message: value});
+    }
+
+    onClickButtonSettings() {
+        this.setProps({openSettings: !this.props.openSettings});
     }
 
     onClickButtonSend() {
@@ -99,6 +123,20 @@ export class Chat extends Block{
             return;
         }
         console.log(`Отправляем сообщение ${this.props.message}`);
+    }
+
+    componentDidUpdate(oldProps: ChatElementProps, newProps: ChatElementProps): boolean {
+        if (oldProps.openChatId !== newProps.openChatId) {
+            this.setProps({
+                messages: newProps.chatInfo.map(
+                    (chatProps: ChatInfoProps) =>
+                        new Message({
+                            ...chatProps,
+                        }),
+                ),
+            });
+        }
+        return true;
     }
 
     render() {
@@ -114,6 +152,9 @@ export class Chat extends Block{
                         </div>
                         <div class="${styles.actions}">
                             {{{ ButtonOptions }}}
+                            {{#if openSettings }}
+                                {{{ SettingsChat }}}
+                            {{/if }}
                         </div>
                     </div>
                     <div class="${styles.chat}">
@@ -122,6 +163,11 @@ export class Chat extends Block{
                         {{/each}}
                     </div>
                     <div class="${styles.message__send}">
+                        <div class=${styles.actionAdd}>
+                            {{#if openAddFiles}}
+                                {{{ AddFilesBubble }}}
+                            {{/if }}
+                        </div>
                         <div class="${styles.plus}">
                             {{{ ButtonAdd }}}
                         </div>

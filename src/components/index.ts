@@ -7,3 +7,4 @@ export { ListChats } from './listChats';
 export { Message } from './message';
 export { Avatar } from './avatar';
 export { Chat } from './chat';
+export { AddFiles } from './addFiles';
