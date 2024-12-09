@@ -75,7 +75,7 @@ export default class Chats extends Block{
             <div>
                 <div class="${styles.chats}">
                     <div class="${styles.menu}">
-                        <a href="#" page="profile" class="${styles.me} ${styles.block}">
+                        <a href="#" page="settings" class="${styles.me} ${styles.block}">
                             <div class="${styles.header}">
                                 <div class="${styles.avatar}">
                                     {{> Avatar img="handsome-sensitive-red-head-man-smiling.jpg" }}

@@ -299,7 +299,7 @@ export default class Profile extends Block {
             return `
                 <div class=${styles.root}>
                     <div class=${styles.profile}>
-                        <a class="${styles.back}" href="#" page="chats">К чатам {{> Icon name="chevron_left"}}</a>
+                        <a class="${styles.back}" href="#" page="messenger">К чатам {{> Icon name="chevron_left"}}</a>
                         <form onsubmit="">
                             <div class=${styles.block}>
                                 <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
@@ -331,7 +331,7 @@ export default class Profile extends Block {
         return `
             <div class=${styles.root}>
                 <div class=${styles.profile}>
-                    <a class="${styles.back}" href="#" page="chats">К чатам {{> Icon name="chevron_left"}}</a>
+                    <a class="${styles.back}" href="#" page="messenger">К чатам {{> Icon name="chevron_left"}}</a>
                     <div class=${styles.block}>
                         <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
                     </div>
