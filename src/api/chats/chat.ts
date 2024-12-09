@@ -1,17 +1,26 @@
-import HTTP from './../HTTP/HTTPTransport.ts';
-import { BaseAPI } from './base.ts';
+import HTTPTransport from "../../HTTP/HTTPTransport";
+import {
+    APIErrorResponse,
+    CreateChatRequest,
+    CreateChatResponse,
+    getChatsRequest,
+} from "../type";
 
-const http = new HTTP();
+const chatsApi = new HTTPTransport("/chats");
 
-class ChatAPI extends BaseAPI {
-    private _link = 'api/v1/chats';
-    create() {
-        return http.post(this._link + '/', {title: 'string'});
+export default class ChatsApi {
+    async getChats(data: getChatsRequest): Promise< | APIErrorResponse | unknown> {
+        return chatsApi.get("", data );
     }
 
-    request() {
-        return http.get(this._link + '/full');
+    async createChat(data: CreateChatRequest): Promise< CreateChatResponse | APIErrorResponse | unknown> {
+        return chatsApi.post("", { data } );
     }
-}
 
-export default ChatAPI;
+    async deleteChats(data: string) {
+        return chatsApi.delete("", { data });
+    }
+    async getTokenChat(data: number) {
+        return chatsApi.post(`/token/${data}`);
+    }
+};

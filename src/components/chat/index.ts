@@ -5,6 +5,8 @@ import {InputElement} from "../input";
 import {ButtonElement} from "../button";
 import {AddFiles} from "../addFiles";
 
+import * as chatsService from '../../services/chats.ts';
+
 interface ChatInfoProps {
     name: string,
     avatar: string,
@@ -95,6 +97,7 @@ export class Chat extends Block{
             this.setProps({openAddFiles: false});
         }, 1000);
     }
+
     onEnterMessage(e: Event) {
         const target = e.target as HTMLInputElement;
         const value = target.value;
@@ -110,7 +113,9 @@ export class Chat extends Block{
         const target = e.target as HTMLInputElement;
         const value = target.value;
 
-        this.setProps({message: value});
+        this.setProps({
+            message: value
+        });
     }
 
     onClickButtonSettings() {
@@ -126,17 +131,12 @@ export class Chat extends Block{
     }
 
     componentDidUpdate(oldProps: ChatElementProps, newProps: ChatElementProps): boolean {
-        if (oldProps.openChatId !== newProps.openChatId) {
-            this.setProps({
-                messages: newProps.chatInfo.map(
-                    (chatProps: ChatInfoProps) =>
-                        new Message({
-                            ...chatProps,
-                        }),
-                ),
-            });
+        if (oldProps.openChatId !== newProps.openChatId && newProps.openChatId &&  newProps.openChatId > 0) {
+            console.log(newProps.openChatId);
+            chatsService.getTokenChat(newProps.openChatId);
+            return true;
         }
-        return true;
+        return false;
     }
 
     render() {

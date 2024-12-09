@@ -1,18 +1,8 @@
 import styles from './listChats.module.scss';
-import Block from "../../core/Block.ts";
-import { Chats } from "../chats";
+import Block, {Props} from "../../core/Block.ts";
+import {ChatProps} from "../chats";
+import {Chats} from "../index.ts";
 
-interface ChatProps {
-    id: number,
-    name: string,
-    lastMessage: string,
-    time: string,
-    isOnline: boolean,
-    avatar: string,
-    isTyping: boolean,
-    setProps?: ({  }) => void,
-    props?: {id: number},
-}
 type ChatsProps = ChatProps[];
 
 interface ListElementProps {
@@ -28,9 +18,11 @@ export class ListChats extends Block {
             openChatId: -1,
             openChat: false,
             Chats: props.chatsList.map(
-                (chatProps) =>
+                (chatProps: ChatProps) =>
                     new Chats({
                         ...chatProps,
+                        id: chatProps.id,
+                        title: chatProps.title,
                         onClick: () => {
                             this.props.onSelectChat(chatProps.id);
                             this.setProps({ openChatId: chatProps.id });
@@ -41,6 +33,27 @@ export class ListChats extends Block {
         });
     }
 
+    componentDidUpdate(oldProps?: Props, newProps?: Props): boolean {
+        if (oldProps === newProps) {
+            return false;
+        }
+
+        if (newProps && newProps.chats) {
+            this.children.Chats = newProps.chats.map(
+                (chatProps: any) =>
+                    new Chats({
+                        ...chatProps,
+                        onClick: () => {
+                            this.props.onSelectChat(chatProps.id);
+                            this.setProps({ openChatId: chatProps.id });
+                            this.setProps({ openChat: true});
+                        },
+                    }),
+            )
+        }
+
+        return true;
+    }
 
     render() {
         const { openChatId } = this.props;

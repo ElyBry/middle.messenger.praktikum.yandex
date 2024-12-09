@@ -4,6 +4,12 @@ import Handlebars from 'handlebars';
 import * as Pages from './pages';
 import * as Components from './components'
 
+import Router from "./routing/Router.ts";
+import { CONSTS } from "./CONSTS.ts";
+
+import Store, { StoreEvents } from "./store/Store.ts";
+import {checkLoginUser} from "./services/auth.ts";
+
 interface Template<T> {
     (context: T): string;
 }
@@ -20,46 +26,28 @@ Handlebars.registerHelper('isEqual', (v1,v2,options) => {
     }
 })
 
-function navigate(page: string) {
-    const [ source, context ] = pages[page];
-    const container = document.getElementById('app')!;
-
-    if (source instanceof Object) {
-        const page = new source(context);
-        container.innerHTML = '';
-        container.append(page.getContent());
-        page.dispatchComponentDidMount();
-        return;
-    }
-
-    container.innerHTML = Handlebars.compile(source)(context);
-}
-const pages:Record<string, any> = {
-    '404': [ Pages.Page404 ],
-    '500': [ Pages.Page500 ],
-    'signIn': [ Pages.SignIn ],
-    'signUp': [ Pages.SignUp ],
-    'profile': [ Pages.Profile ],
-    'chats': [ Pages.chats ],
-}
-
-
-document.addEventListener('click', e => {
-    const target = e.target as HTMLElement;
-    const pageElement = target.closest('[page]');
-    const page = pageElement?.getAttribute('page');
-    if (page) {
-        navigate(page);
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    }
+window.store = new Store({
+    isLoading: false,
+    signInError: '',
+    signUpError: '',
+    changeProfileError: '',
+    user: {},
+    tokenChat: '',
 });
 
-const firstPage = window.location.pathname.replace('/','');
-if (firstPage && firstPage in pages) {
-    navigate(firstPage);
-} else {
-    const defPage = '404';
-    navigate(defPage);
+window.store.on(StoreEvents.Updated, (prevState, newState) => {
+    console.log(prevState, newState);
+});
+
+window.router = new Router(CONSTS.APP_ROOT);
+const check = await checkLoginUser();
+window.router.use(CONSTS.signIn, Pages.SignIn)
+    .use(CONSTS.signUp, Pages.SignUp)
+    .use(CONSTS.settings, Pages.Settings)
+    .use(CONSTS.messenger, Pages.Messenger)
+    .use(CONSTS.servError, Pages.Page500)
+    .use('*', Pages.Page404)
+    .start()
+if (!check) {
+    window.router.go(CONSTS.signIn);
 }

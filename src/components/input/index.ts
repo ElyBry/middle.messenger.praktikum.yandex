@@ -7,6 +7,7 @@ interface InputElementProps {
     errorText?: string,
     name: string,
     label?: string,
+    value?: string | number | boolean,
     defValue?: string,
     type?: string,
     required?: boolean,
@@ -48,6 +49,10 @@ class InputElement extends Block{
         this.setPropsForChildren(this.children.ErrorLine, newProps);
         return true;
     }
+
+    // public value() {
+    //     return this.children.Input.getContent().value;
+    // }
 
     render() {
         return `

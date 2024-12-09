@@ -1,19 +1,20 @@
 import styles from './chats.module.scss';
-import Block from "../../core/Block.ts";
+import Block, {Props} from "../../core/Block.ts";
+import {connect} from "../../utils/Connect.ts";
 
-interface ChatProps {
+export interface ChatProps {
     id: number,
-    isOnline: boolean,
-    isTyping: boolean,
-    avatar: string,
-    name: string,
-    lastMessage: string,
-    time: string,
-    active?: boolean,
+    avatar?: string,
+    title?: string,
+    last_message?: string,
+    created_by: number,
+    unread_count?: number,
+    openChatId?: number,
+    openChat?: boolean,
     onClick?: (event: FocusEvent) => void,
 }
 
-export class Chats extends Block {
+class Chats extends Block {
     constructor(props: ChatProps) {
         super({
             ...props,
@@ -37,10 +38,10 @@ export class Chats extends Block {
                     </div>
                     <div class="${styles.name_and_message}">
                         <div class="${styles.name}">
-                            {{name}}
+                            {{title}}
                         </div>
                         <div class="${styles.message} {{#if isTyping}} typing {{/if}}">
-                            {{lastMessage}}
+                            {{last_message}}
                         </div>
                     </div>
                 </div>
@@ -52,3 +53,17 @@ export class Chats extends Block {
         `
     }
 }
+interface StateInterface {
+    isLoading: boolean;
+    chats: string;
+    addChatError: string;
+}
+const mapStateToProps = (state: StateInterface) => {
+    return {
+        isLoading: state.isLoading,
+        chats: state.chats,
+        addChatError: state.addChatError,
+    }
+}
+
+export default connect(mapStateToProps)(Chats as unknown as new (props: Props) => Block<Props>);

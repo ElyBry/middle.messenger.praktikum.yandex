@@ -1,3 +1,6 @@
+import queryStringify from "../utils/queryStringify.ts";
+import {CONSTS} from "../CONSTS.ts";
+
 enum METHODS {
     GET = 'GET',
     POST = 'POST',
@@ -7,6 +10,7 @@ enum METHODS {
 }
 
 type Options = {
+    title?: string,
     method?: string,
     data?: any;
     headers?: any;
@@ -16,31 +20,28 @@ type Options = {
 
 type HTTPMethod = (url: string, options?: Options) => Promise<unknown>;
 
-const queryStringify = (data: Record<string, any>): string => {
-    const keys = Object.keys(data);
-    return keys.reduce((result, key, index) => {
-        return `${result}${key}=${data[key]}${index < keys.length - 1 ? '&' : ''}`;
-    }, '?');
-}
-
 class HTTPTransport {
+    private apiUrl = "";
+    constructor(apiUrl: string) {
+        this.apiUrl = `${CONSTS.API_URL}${apiUrl}`;
+    }
     get: HTTPMethod = (url, options = {}) => {
-        return this.request(url, {...options, method: METHODS.GET}, options.timeout);
+        return this._request(url, {...options, method: METHODS.GET}, options.timeout);
     };
     post: HTTPMethod = (url, options = {}) => {
-        return this.request(url, {...options, method: METHODS.POST}, options.timeout);
+        return this._request(url, {...options, method: METHODS.POST}, options.timeout);
     };
     put: HTTPMethod = (url, options = {}) => {
-        return this.request(url, {...options, method: METHODS.PUT}, options.timeout);
+        return this._request(url, {...options, method: METHODS.PUT}, options.timeout);
     };
     patch: HTTPMethod = (url, options = {}) => {
-        return this.request(url, {...options, method: METHODS.PATCH}, options.timeout);
+        return this._request(url, {...options, method: METHODS.PATCH}, options.timeout);
     };
     delete: HTTPMethod = (url, options = {}) => {
-        return this.request(url, {...options, method: METHODS.DELETE}, options.timeout);
+        return this._request(url, {...options, method: METHODS.DELETE}, options.timeout);
     };
 
-    private fetchWithRetry: HTTPMethod = (url, options = {}) => {
+    private _fetchWithRetry: HTTPMethod = (url, options = {}) => {
         const { tries = 1 } = options;
 
         const onError = (err: Error) => {
@@ -49,13 +50,14 @@ class HTTPTransport {
                 throw err;
             }
 
-            return this.fetchWithRetry(url, {...options, tries: triesLeft});
+            return this._fetchWithRetry(url, {...options, tries: triesLeft});
         };
 
         return fetch(url, options).catch(onError);
     };
 
-    request = (url: string, options: Options = {}, timeout = 5000) => {
+    private _request = async (url: string, options: Options = {}, timeout = 5000) => {
+        url = `${this.apiUrl}${url}`;
         const {method, data, headers = {}} = options;
 
         return new Promise((resolve, reject): Promise<XMLHttpRequest> | undefined => {
@@ -71,28 +73,38 @@ class HTTPTransport {
                 isGet && !!data
                     ? `${url}${queryStringify(data)}`
                     : url,
+
             );
+
+            xhr.withCredentials = true;
+            xhr.setRequestHeader('Content-type', 'application/json');
 
             Object.keys(headers).forEach(key => {
                 xhr.setRequestHeader(key, headers[key]);
             });
 
             xhr.onload = () => {
-                resolve(xhr);
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    resolve(xhr);
+                } if (xhr.status >= 400 && xhr.status < 500) {
+                    reject(xhr);
+                } else {
+                    reject(xhr);
+                }
             }
 
-            xhr.onabort = reject;
-            xhr.onerror = reject;
+            xhr.onabort = () => reject(xhr);
+            xhr.onerror = () => reject(xhr);
 
             xhr.timeout = timeout;
-            xhr.ontimeout = reject;
+            xhr.ontimeout = () => reject(xhr);
 
             if (isGet || !data) {
                 xhr.send();
             } else {
-                xhr.send(data);
+                xhr.send(JSON.stringify(data));
             }
-        }).catch(() => this.fetchWithRetry(url, options));
+        });
     };
 }
 

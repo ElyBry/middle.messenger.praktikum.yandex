@@ -35,5 +35,5 @@
     "sass": "^1.80.5",
     "vite-plugin-handlebars": "^2.0.0"
   },
-  "main": "src/app.ts"
+  "main": "src/App.ts"
 }
