@@ -60,7 +60,7 @@
       background: var.$note;
     }
     img {
-      @include var.mini-avatars();
+      @include var.mini-avatars;
     }
   }
 }

@@ -1,19 +1,26 @@
 @use "var";
 
 .root {
-  @include var.root();
+  @include var.root;
+
   height: auto;
 }
 
 .profile {
-  @include var.center-block();
+  @include var.center-block;
+
   flex-direction: column;
   max-width: 80%;
   margin-top: 20px;
   padding: var.$padding-page;
   position: relative;
-  @include var.box-shadow();
+
+  @include var.box-shadow;
   @include var.border-radius;
+  .back {
+    @include var.center-block;
+    @include var.button-back;
+  }
   .block {
     width: 100%;
     margin-bottom: var.$padding-elements;
@@ -23,6 +30,9 @@
     img {
       width: 60%;
       margin: 20px auto;
+    }
+    input {
+      width: 100%;
     }
   }
 }
