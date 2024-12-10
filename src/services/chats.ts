@@ -2,6 +2,7 @@ import {CreateChatRequest, getChatsRequest, userAddRequest} from "../api/type.ts
 import ChatsApi from "../api/chats/chat.ts";
 import {CONSTS} from "../CONSTS.ts";
 import AsyncOperationHandler from "../api/base.ts";
+import WSChat from "../websocket/messages/WSChat.ts";
 
 const chatsApi = new ChatsApi();
 
@@ -31,6 +32,18 @@ export const getTokenChat = async (model: number) => {
         if (typeof result === 'object' && result !== null && 'response' in result) {
             const token = await JSON.parse((result as any).response);
             window.store.set({ tokenChat: token.token });
+            const userId = window.store.getState().user?.id
+            if (!userId) {
+                console.log("Произошла непредвиденная ошибка");
+                window.store.set({ notificationError: "Произошла непредвиденная ошибка"});
+            } else {
+                if (!window.wsChat) {
+                    const wsChatInstance = new WSChat(userId, model, token.token);
+                    window.wsChat = wsChatInstance;
+                } else {
+                    window.wsChat._changeSocketAddress(userId, model, token.token);
+                }
+            }
         } else {
             console.log("Произошла непредвиденная ошибка");
         }
@@ -40,14 +53,6 @@ export const getTokenChat = async (model: number) => {
 export const addUser = async (model: userAddRequest) => {
     const handler = new AsyncOperationHandler('addUserError');
     await handler.execute(async () => {
-        const result = await chatsApi.addUser(model);
-        if (typeof result === 'object' && result !== null && 'response' in result) {
-            getChats({
-                offset: CONSTS.offset as number,
-                limit: CONSTS.limit as number,
-            });
-        } else {
-            console.log("Произошла непредвиденная ошибка");
-        }
+        await chatsApi.addUser(model);
     })
 };

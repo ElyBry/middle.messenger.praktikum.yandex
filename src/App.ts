@@ -7,7 +7,7 @@ import * as Components from './components'
 import Router from "./routing/Router.ts";
 import { CONSTS } from "./CONSTS.ts";
 
-import Store, { StoreEvents } from "./store/Store.ts";
+import Store from "./store/Store.ts";
 import {checkLoginUser} from "./services/auth.ts";
 
 interface Template<T> {
@@ -36,10 +36,6 @@ window.store = new Store({
     tokenChat: '',
 });
 
-window.store.on(StoreEvents.Updated, (prevState, newState) => {
-    // console.log(prevState, newState);
-});
-
 window.router = new Router(CONSTS.APP_ROOT);
 const check = await checkLoginUser();
 window.router.use(CONSTS.signIn, Pages.SignIn)
@@ -52,5 +48,5 @@ window.router.use(CONSTS.signIn, Pages.SignIn)
 if (!check) {
     window.router.go(CONSTS.signIn);
 } else {
-    window.router.go(CONSTS.messenger);
+    window.router.go(window.location.pathname);
 }

@@ -1,5 +1,5 @@
 import styles from '../scss/profile.module.scss';
-import Block from "../core/Block.ts";
+import Block, {Props} from "../core/Block.ts";
 import {Avatar, ButtonElement, Field, InputElement, Link} from "../components";
 import validInputs from "../validators/validInputs.ts";
 import {connect} from "../utils/Connect.ts";
@@ -386,7 +386,7 @@ class Settings extends Block {
         this.setProps({isChange: true});
     }
 
-    onConfirmChange(e: Event) {
+    async onConfirmChange(e: Event) {
         e.preventDefault();
         const inputs: UserInputs = {};
         const fieldsToValidate = [
@@ -396,14 +396,13 @@ class Settings extends Block {
             { name: 'display_name', validator: checkFirstSecondNames },
             { name: 'phone', validator: checkPhone },
             { name: 'login', validator: checkLogin },
-            { name: 'password', validator: checkPassword },
         ];
 
         let countChanges = 0;
         for (const field of fieldsToValidate) {
             if (this.props[field.name]) {
                 countChanges++;
-                const error = field.validator(this.props[field.name], this.props[field.name]);
+                const error = field.validator(this.props[field.name]);
                 if (error.errorMessage) {
                     this.setPropsForChildren(this.children[`Input${this.capitalizeFirstLetter(field.name)}`], error);
                     return;
@@ -423,12 +422,26 @@ class Settings extends Block {
             email: this.props.email,
             phone: this.props.phone,
             login: this.props.login,
-            password: this.props.password,
         };
-        userService.changeProfile(data);
+        await userService.changeProfile(data);
+        this.setProps({ user: window.store.getState().user, isChange: false })
     }
     capitalizeFirstLetter(string: string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    componentDidUpdate(oldProps: Props, newProps: Props): boolean {
+        if (oldProps === newProps) {
+            return false;
+        }
+
+        this.setPropsForChildren(this.children.FieldFirstName, { value: newProps.user.first_name });
+        this.setPropsForChildren(this.children.FieldSecondName, { value: newProps.user.second_name });
+        this.setPropsForChildren(this.children.FieldNumberPhone, { value: newProps.user.phone });
+        this.setPropsForChildren(this.children.FieldEmail, { value: newProps.user.email });
+        this.setPropsForChildren(this.children.FieldDisplayName, { value: newProps.user.display_name });
+        this.setPropsForChildren(this.children.AvatarBlock, { value: newProps.user.avatar });
+        return true;
     }
 
     render() {
@@ -470,7 +483,7 @@ class Settings extends Block {
                 <div class=${styles.profile}>
                     {{{ BackLink }}}
                     <div class=${styles.block}>
-                        <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
+                        {{{ AvatarBlock }}}
                     </div>
                     <div class=${styles.block}>
                         {{{ FieldDisplayName }}} 

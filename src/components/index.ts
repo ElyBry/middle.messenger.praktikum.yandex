@@ -4,7 +4,7 @@ export { InputElement } from './input';
 export { Field } from './field';
 export { default as Chats} from './chats';
 export { default as ListChats } from './listChats';
-export { Message } from './message';
+export { default as Message } from './message';
 export { default as Avatar } from './avatar';
 export { default as Chat } from './chat';
 export { AddFiles } from './addFiles';

@@ -93,7 +93,6 @@ class Messenger extends Block{
         this.setProps({openAddChat: true});
     }
 
-
     onClickButtonAddChat(e: Event) {
         e.preventDefault();
         const data = {
@@ -115,6 +114,10 @@ class Messenger extends Block{
     }
 
     async onSelectChat(chatProps: {id: number, title: string}) {
+        if (this.props.openChatId === chatProps.id) {
+            return;
+        }
+        this.setProps({openChatId: chatProps.id});
         this.setPropsForChildren(this.children.ListChatsElement, {openChatId: chatProps.id});
         await chatsService.getTokenChat(chatProps.id);
 
@@ -122,6 +125,7 @@ class Messenger extends Block{
             openChat: true,
             pickedChat: chatProps,
         });
+
         console.log(`ID: ${chatProps.id}, ${chatProps.title}`);
     }
 

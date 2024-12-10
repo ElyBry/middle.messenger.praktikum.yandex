@@ -4,7 +4,7 @@ import {InputElement} from "../input";
 import {ButtonElement} from "../button";
 import {AddFiles} from "../addFiles";
 
-import {Avatar} from "../index.ts";
+import {Avatar, Message} from "../index.ts";
 import {connect} from "../../utils/Connect.ts";
 import {LastMessageUser} from "../../api/type.ts";
 
@@ -26,8 +26,15 @@ class Chat extends Block{
     constructor(props: ChatElementProps) {
         super({
             ...props,
+            messages: window.store.getState().messages || {},
             openAddFiles: false,
             openSettings: true,
+            Messages: Object.values(window.store.getState().messages || {}).map(
+                (messageProps: any) =>
+                    new Message({
+                        ...messageProps,
+                    })
+            ),
         });
     }
     init() {
@@ -104,7 +111,7 @@ class Chat extends Block{
             console.log(`Сообщение пустое`);
             return;
         }
-        console.log(`Отправляем сообщение ${value}`);
+        this.sendMessage(value);
     }
     onChangeMessage(e: Event) {
         e.preventDefault();
@@ -114,6 +121,9 @@ class Chat extends Block{
         this.setProps({
             message: value
         });
+    }
+    sendMessage(value: string) {
+        window.wsChat.sendMessage(value);
     }
 
     onClickButtonSettings() {
@@ -125,7 +135,7 @@ class Chat extends Block{
             console.log(`Сообщение пустое`);
             return;
         }
-        console.log(`Отправляем сообщение ${this.props.message}`);
+        this.sendMessage(this.props.message);
     }
 
     componentDidUpdate(oldProps: Props, newProps: Props): boolean {
@@ -134,11 +144,23 @@ class Chat extends Block{
         }
 
         this.setPropsForChildren(this.children.AvatarChat, { img: newProps?.pickedChat?.avatar });
+        if (newProps && newProps.messages) {
+            this.children.Messages = Object.values(newProps.messages).map(
+                (messageProps: any) =>
+                    new Message({
+                        ...messageProps,
+                    })
+            );
+        }
         return true;
     }
 
     render() {
         const title = this.props?.pickedChat?.title || '';
+        const messages = this.props.messages;
+        if (messages !== null && Array.isArray(messages)) {
+
+        }
         return `
             {{#if openChat }}
                 <div class="${styles.message__window}">
@@ -157,7 +179,7 @@ class Chat extends Block{
                         </div>
                     </div>
                     <div class="${styles.chat}">
-                        {{#each messages}}
+                        {{#each Messages}}
                             {{{ this }}}
                         {{/each}}
                     </div>
