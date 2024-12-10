@@ -3,7 +3,7 @@ import {
     APIErrorResponse,
     CreateChatRequest,
     CreateChatResponse,
-    getChatsRequest,
+    getChatsRequest, userAddRequest,
 } from "../type";
 
 const chatsApi = new HTTPTransport("/chats");
@@ -20,7 +20,12 @@ export default class ChatsApi {
     async deleteChats(data: string) {
         return chatsApi.delete("", { data });
     }
+
     async getTokenChat(data: number) {
         return chatsApi.post(`/token/${data}`);
+    }
+
+    async addUser(data: userAddRequest) {
+        return chatsApi.put('/users', { data });
     }
 };

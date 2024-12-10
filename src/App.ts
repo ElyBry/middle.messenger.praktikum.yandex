@@ -32,11 +32,12 @@ window.store = new Store({
     signUpError: '',
     changeProfileError: '',
     user: {},
+    pickedChat: {},
     tokenChat: '',
 });
 
 window.store.on(StoreEvents.Updated, (prevState, newState) => {
-    console.log(prevState, newState);
+    // console.log(prevState, newState);
 });
 
 window.router = new Router(CONSTS.APP_ROOT);
@@ -50,4 +51,6 @@ window.router.use(CONSTS.signIn, Pages.SignIn)
     .start()
 if (!check) {
     window.router.go(CONSTS.signIn);
+} else {
+    window.router.go(CONSTS.messenger);
 }

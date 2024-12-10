@@ -1,6 +1,6 @@
 import styles from '../scss/chats.module.scss';
-import Block, {Props} from "../core/Block.ts";
-import {ButtonElement, Chat, InputElement, Link, ListChats} from "../components";
+import Block from "../core/Block.ts";
+import {ButtonElement, Chat, InputElement, ListChats, TopMenu} from "../components";
 import * as chatsService from '../services/chats.ts';
 import {CONSTS} from "../CONSTS.ts";
 import {connect} from "../utils/Connect.ts";
@@ -67,18 +67,8 @@ class Messenger extends Block{
             openChatId: this.props.openChatId,
         });
 
-        const SettingsLink = new Link({
+        const Settings = new TopMenu({
             onClick: () => this.props.router.go(CONSTS.settings),
-            inner: `
-                <div class="${styles.header}">
-                    <div class="${styles.avatar}">
-                        {{> Avatar img="handsome-sensitive-red-head-man-smiling.jpg" }}
-                    </div>
-                    <div class="${styles.name}">
-                        ${this.props?.user?.name}
-                    </div>
-                </div>
-            `
         });
 
         const getChats = async (offset: number, limit: number, title?: string) => {
@@ -92,7 +82,7 @@ class Messenger extends Block{
             ButtonOpenAddChat,
             ListChatsElement,
             ChatElement,
-            SettingsLink,
+            Settings,
             ButtonCloseAddChat,
             ButtonAddChat,
             InputNameChat,
@@ -106,10 +96,10 @@ class Messenger extends Block{
 
     onClickButtonAddChat(e: Event) {
         e.preventDefault();
-
         const data = {
             title: this.props.chatName,
         }
+
         chatsService.createChats(data);
     }
 
@@ -124,12 +114,15 @@ class Messenger extends Block{
         this.setProps({openAddChat: false});
     }
 
-    onSelectChat(chatId: number) {
-        this.setPropsForChildren(this.children.ChatElement,{
-            openChatId: chatId,
+    async onSelectChat(chatProps: {id: number, title: string}) {
+        this.setPropsForChildren(this.children.ListChatsElement, {openChatId: chatProps.id});
+        await chatsService.getTokenChat(chatProps.id);
+
+        this.setPropsForChildren(this.children.ChatElement, {
             openChat: true,
+            pickedChat: chatProps,
         });
-        console.log(`ID: ${chatId}`);
+        console.log(`ID: ${chatProps.id}, ${chatProps.title}`);
     }
 
     onEnterInputSearch(e: Event) {
@@ -139,18 +132,13 @@ class Messenger extends Block{
         this.setProps({search: value});
     }
 
-    componentDidUpdate(oldProps?: Props, newProps?: Props): boolean {
-        if (oldProps !== newProps) {
-            this.setPropsForChildren(this.children.ListChatsElement, newProps);
-            return true;
-        }
-        return false;
-    }
-
     render() {
         return `
             <div>
                 <div class="${styles.chats}">
+                    {{#if isLoading}}
+                        <h1>spinner</h1>
+                    {{/if}}
                     {{#if openAddChat}}
                         <div class="${styles.module}">
                             {{{ ButtonCloseAddChat }}}
@@ -165,7 +153,7 @@ class Messenger extends Block{
                         </div>
                     {{/if }}
                     <div class="${styles.menu}">
-                        {{{ SettingsLink }}}
+                        {{{ Settings }}}
                         <div class="${styles.search} ${styles.block}">
                             {{{ InputSearch }}}
                             {{{ ButtonOpenAddChat }}}
@@ -182,14 +170,10 @@ class Messenger extends Block{
 }
 interface StateInterface {
     isLoading: boolean;
-    chats: string;
-    addChatError: string;
 }
 const mapStateToProps = (state: StateInterface) => {
     return {
         isLoading: state.isLoading,
-        chats: state.chats,
-        addChatError: state.addChatError,
     }
 }
 

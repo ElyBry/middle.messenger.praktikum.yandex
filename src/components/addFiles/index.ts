@@ -1,4 +1,4 @@
-import styles from './addFiles.module.scss';
+import styles from './index.module.scss';
 import Block from "../../core/Block.ts";
 
 interface AddFilesProps {

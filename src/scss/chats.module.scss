@@ -31,23 +31,6 @@
   padding: 10px;
   display: flex;
   flex-direction: column;
-  .me {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    .avatar img{
-      @include var.mini-avatars;
-    }
-    .header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .name {
-        margin-left: var.$margin-elements;
-      }
-    }
-  }
   .search {
     display: flex;
     align-items: center;

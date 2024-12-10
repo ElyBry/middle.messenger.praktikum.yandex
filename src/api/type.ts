@@ -58,10 +58,17 @@ export type CreateChatResponse = {
     id: number,
 }
 
-type LastMessageRequest = {
-    user: UserDTOResponse,
+export type userAddRequest = {
+    users: number[],
+    chatId: number,
+}
+
+export type LastMessageUser = Omit<UserDTOResponse, 'id' | 'display_name' >
+
+export type LastMessageResponse = {
     time: string,
-    content: string
+    content: string,
+    user: LastMessageUser,
 }
 
 export type ChatDTOResponse = {
@@ -69,5 +76,5 @@ export type ChatDTOResponse = {
     title: string,
     avatar: string | null,
     unread_count: number,
-    last_message: LastMessageRequest | null
+    last_message: LastMessageResponse | null
 }

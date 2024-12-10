@@ -1,22 +1,21 @@
-import styles from './listChats.module.scss';
+import styles from './index.module.scss';
 import Block, {Props} from "../../core/Block.ts";
 import {ChatProps} from "../chats";
 import {Chats} from "../index.ts";
+import {connect} from "../../utils/Connect.ts";
 
 type ChatsProps = ChatProps[];
 
 interface ListElementProps {
     chatsList: ChatsProps,
-    onClick?: (event: FocusEvent) => void,
-    onSelectChat?: (event: number) => void,
+    onSelectChat?: (event: { }) => void,
 }
 
-export class ListChats extends Block {
+class ListChats extends Block {
     constructor(props: ListElementProps) {
         super({
             ...props,
             openChatId: -1,
-            openChat: false,
             Chats: props.chatsList.map(
                 (chatProps: ChatProps) =>
                     new Chats({
@@ -24,9 +23,9 @@ export class ListChats extends Block {
                         id: chatProps.id,
                         title: chatProps.title,
                         onClick: () => {
-                            this.props.onSelectChat(chatProps.id);
-                            this.setProps({ openChatId: chatProps.id });
-                            this.setProps({ openChat: true});
+                            if (props.onSelectChat) {
+                                props.onSelectChat(chatProps)
+                            }
                         },
                     }),
             ),
@@ -44,9 +43,9 @@ export class ListChats extends Block {
                     new Chats({
                         ...chatProps,
                         onClick: () => {
-                            this.props.onSelectChat(chatProps.id);
-                            this.setProps({ openChatId: chatProps.id });
-                            this.setProps({ openChat: true});
+                            if (this.props.onSelectChat) {
+                                this.props.onSelectChat(chatProps)
+                            }
                         },
                     }),
             )
@@ -82,3 +81,13 @@ export class ListChats extends Block {
         `
     }
 }
+interface StateInterface {
+    chats: {}
+}
+const mapStateToProps = (state: StateInterface) => {
+    return {
+        chats: state.chats,
+    }
+}
+
+export default connect(mapStateToProps)(ListChats as unknown as new (newProps: Props) => Block<Props>);

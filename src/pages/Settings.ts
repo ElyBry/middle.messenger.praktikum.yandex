@@ -1,6 +1,6 @@
 import styles from '../scss/profile.module.scss';
 import Block from "../core/Block.ts";
-import {ButtonElement, Field, InputElement, Link} from "../components";
+import {Avatar, ButtonElement, Field, InputElement, Link} from "../components";
 import validInputs from "../validators/validInputs.ts";
 import {connect} from "../utils/Connect.ts";
 import {withRouter} from "../routing/WithRouter.ts";
@@ -228,6 +228,9 @@ class Settings extends Block {
             name: "Почта",
             value: this.props.email || "-",
         });
+        const AvatarBlock = new Avatar({
+            img: window.store?.getState()?.user?.avatar || '',
+        })
 
         this.children = {
             ...this.children,
@@ -256,6 +259,7 @@ class Settings extends Block {
             ButtonCancelChangePassword,
             ButtonConfirmChangePassword,
             ButtonConfirmChangeAvatar,
+            AvatarBlock,
         };
     };
 
@@ -435,7 +439,7 @@ class Settings extends Block {
                         {{{ BackLink }}}
                         <form onsubmit="">
                             <div class=${styles.block}>
-                                <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
+                                {{{ AvatarBlock }}}
                                 {{{ ButtonChangeAvatar }}}
                             </div>
                             <div class=${styles.block}>

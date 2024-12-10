@@ -7,7 +7,12 @@ export enum StoreEvents {
 interface Indexed {
     user?: {
         display_name?: string,
+        avatar?: string,
     },
+    pickedChat?: {
+        title: string,
+        avatar: string,
+    }
 }
 
 export default class Store extends EventBus<string> {

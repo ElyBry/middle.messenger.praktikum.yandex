@@ -1,40 +1,33 @@
-import styles from './chat.module.scss';
-import Block from "../../core/Block.ts";
-import {Message} from "../message";
+import styles from './index.module.scss';
+import Block, {Props} from "../../core/Block.ts";
 import {InputElement} from "../input";
 import {ButtonElement} from "../button";
 import {AddFiles} from "../addFiles";
 
-import * as chatsService from '../../services/chats.ts';
+import {Avatar} from "../index.ts";
+import {connect} from "../../utils/Connect.ts";
+import {LastMessageUser} from "../../api/type.ts";
 
 interface ChatInfoProps {
-    name: string,
+    id: number,
+    created_by: number,
     avatar: string,
-    message: string,
-    time: string,
-    me?: boolean,
+    last_message: LastMessageUser,
+    title: string,
+    unread_count: number,
 }
-type ChatsProps = ChatInfoProps[];
 
 interface ChatElementProps {
-    chatInfo: ChatsProps,
-    openChat?: boolean,
-    openChatId?: number,
+    pickedChat: ChatInfoProps,
     onClick?: (event: FocusEvent) => void,
 }
 
-export class Chat extends Block{
+class Chat extends Block{
     constructor(props: ChatElementProps) {
         super({
             ...props,
             openAddFiles: false,
             openSettings: true,
-            messages: props.chatInfo.map(
-                (chatProps: ChatInfoProps) =>
-                    new Message({
-                        ...chatProps,
-                    }),
-            ),
         });
     }
     init() {
@@ -79,13 +72,18 @@ export class Chat extends Block{
             onClick: onClickButtonSendBind,
         });
 
+        const AvatarChat = new Avatar({
+            img: this.props?.pickedChat?.avatar || '',
+        });
+
         this.children = {
             ...this.children,
             InputMessage,
             ButtonSend,
             ButtonOptions,
             ButtonAdd,
-            AddFilesBubble
+            AddFilesBubble,
+            AvatarChat,
         };
     }
     onHoverAdd() {
@@ -130,25 +128,26 @@ export class Chat extends Block{
         console.log(`Отправляем сообщение ${this.props.message}`);
     }
 
-    componentDidUpdate(oldProps: ChatElementProps, newProps: ChatElementProps): boolean {
-        if (oldProps.openChatId !== newProps.openChatId && newProps.openChatId &&  newProps.openChatId > 0) {
-            console.log(newProps.openChatId);
-            chatsService.getTokenChat(newProps.openChatId);
-            return true;
+    componentDidUpdate(oldProps: Props, newProps: Props): boolean {
+        if (oldProps === newProps) {
+            return false;
         }
-        return false;
+
+        this.setPropsForChildren(this.children.AvatarChat, { img: newProps?.pickedChat?.avatar });
+        return true;
     }
 
     render() {
+        const title = this.props?.pickedChat?.title || '';
         return `
             {{#if openChat }}
                 <div class="${styles.message__window}">
                     <div class="${styles.header}">
                         <div class="${styles.avatar}">
-                            {{> Avatar img="business-man-by-skyscraper.jpg" }}
+                            {{{ AvatarChat }}}
                         </div>
                         <div class="${styles.name}">
-                            Иван Иванов
+                            ${title}
                         </div>
                         <div class="${styles.actions}">
                             {{{ ButtonOptions }}}
@@ -183,3 +182,15 @@ export class Chat extends Block{
         `
     }
 }
+
+interface StateInterface {
+    messages: []
+}
+const mapStateToProps = (state: StateInterface) => {
+    return {
+        messages: state.messages,
+    }
+}
+
+export default connect(mapStateToProps)(Chat as unknown as new (newProps: Props) => Block<Props>);
+

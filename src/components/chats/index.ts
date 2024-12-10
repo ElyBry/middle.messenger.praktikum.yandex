@@ -1,17 +1,12 @@
-import styles from './chats.module.scss';
-import Block, {Props} from "../../core/Block.ts";
-import {connect} from "../../utils/Connect.ts";
+import styles from './index.module.scss';
+import Block from "../../core/Block.ts";
+import Avatar from "../avatar";
+import {ChatDTOResponse} from "../../api/type.ts";
 
-export interface ChatProps {
-    id: number,
-    avatar?: string,
-    title?: string,
-    last_message?: string,
-    created_by: number,
-    unread_count?: number,
+export interface ChatProps extends ChatDTOResponse {
     openChatId?: number,
     openChat?: boolean,
-    onClick?: (event: FocusEvent) => void,
+    onClick?: () => void,
 }
 
 class Chats extends Block {
@@ -21,6 +16,9 @@ class Chats extends Block {
             events: {
                 click: props.onClick,
             },
+            AvatarBlock: new Avatar({
+                img: props.avatar || '',
+            })
         });
     }
 
@@ -34,11 +32,11 @@ class Chats extends Block {
                         {{else}}
                             <div class="${styles.offline}"></div>
                         {{/isEqual}}
-                        {{> Avatar img=avatar }}
+                        {{{ AvatarBlock }}}
                     </div>
                     <div class="${styles.name_and_message}">
                         <div class="${styles.name}">
-                            {{title}}
+                            {{ title }}
                         </div>
                         <div class="${styles.message} {{#if isTyping}} typing {{/if}}">
                             {{last_message}}
@@ -53,17 +51,5 @@ class Chats extends Block {
         `
     }
 }
-interface StateInterface {
-    isLoading: boolean;
-    chats: string;
-    addChatError: string;
-}
-const mapStateToProps = (state: StateInterface) => {
-    return {
-        isLoading: state.isLoading,
-        chats: state.chats,
-        addChatError: state.addChatError,
-    }
-}
 
-export default connect(mapStateToProps)(Chats as unknown as new (props: Props) => Block<Props>);
+export default Chats;

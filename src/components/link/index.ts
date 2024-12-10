@@ -7,7 +7,6 @@ interface LinkProps {
     onClick?: () => void,
     iconName?: string,
     attrs?: string,
-    inner?: Handlebars.SafeString | string,
 }
 
 export class Link extends Block {
@@ -22,14 +21,12 @@ export class Link extends Block {
                     }
                 },
             },
-            inner: props.inner,
         });
     }
     render() {
         return `
             <a class="{{ class }}" href={{ href }} "{{ attrs }}">
                 {{ text }} {{> Icon name=iconName}}
-                {{{ inner }}}
             </a>
         `
     }

@@ -1,5 +1,6 @@
-import styles from './message.module.scss';
+import styles from './index.module.scss';
 import Block from "../../core/Block.ts";
+import {Avatar} from "../index.ts";
 
 interface ChatInfoProps {
     name: string,
@@ -11,13 +12,18 @@ interface ChatInfoProps {
 
 export class Message extends Block {
     constructor(props: ChatInfoProps) {
-        super(props);
+        super({
+            ...props,
+            AvatarMessage: new Avatar({
+                img: props.avatar,
+            })
+        });
     }
     render() {
         return `
             <div class="${styles.message} {{#if me}} ${styles.me} {{/if}}">
                 <div class="${styles.avatar}">
-                    {{> Avatar img=avatar }}
+                    {{{ AvatarMessage }}}
                 </div>
                 <div class="${styles.messages__item}">
                     <div class="${styles.messages__header}">

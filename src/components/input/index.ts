@@ -1,5 +1,5 @@
 import Block from "../../core/Block.ts";
-import styles from './input.module.scss';
+import styles from './index.module.scss';
 import { Input } from "./input.ts";
 import { ErrorLine } from "./error.ts";
 
