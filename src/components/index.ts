@@ -13,3 +13,5 @@ export { default as TopMenu } from './topMenu';
 export { default as SettingsChatBubble } from './SettingsChatBubble';
 export { default as AddChat } from './addChat';
 export { default as Spinner } from './spinner';
+export { default as AddUser } from './addUser';
+export { default as User } from './users';

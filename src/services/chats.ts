@@ -56,3 +56,10 @@ export const addUser = async (model: userAddRequest) => {
         await chatsApi.addUser(model);
     })
 };
+
+export const getUsersChat = async (model: number) => {
+    const handler = new AsyncOperationHandler('getUsersChatError');
+    await handler.execute(async () => {
+        await chatsApi.getUsersChat(model);
+    })
+}

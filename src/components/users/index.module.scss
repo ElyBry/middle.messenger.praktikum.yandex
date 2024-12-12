@@ -1,0 +1,16 @@
+@use "../../scss/var";
+
+.main {
+  display: flex;
+  flex-direction: row;
+  vertical-align: top;
+  width: 100%;
+  .avatar {
+    margin-right: var.$margin-elements;
+  }
+}
+
+.active {
+  background: #6b6e70;
+  color: white;
+}

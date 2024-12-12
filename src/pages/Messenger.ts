@@ -1,7 +1,7 @@
 import styles from '../scss/chats.module.scss';
 import Block, {Props} from "../core/Block.ts";
 import {
-    AddChat,
+    AddChat, AddUser,
     ButtonElement,
     Chat,
     InputElement,
@@ -72,7 +72,10 @@ class Messenger extends Block{
             openAddChat: this.props.openAddChat,
             closeAddChat: onClickButtonOpenAddChatBind,
         })
-
+        const addUserElement = new AddUser({
+            chatId: this.props.openChatId,
+            closeAdd: onAddUserBind,
+        })
         const SpinnerElement = new Spinner();
 
         const getChats = async (offset: number, limit: number, title?: string) => {
@@ -90,8 +93,10 @@ class Messenger extends Block{
             ButtonOpenAddChat,
             addChatElement,
             SpinnerElement,
+            addUserElement,
         }
     }
+
     onClickButtonOpenAddChat() {
         this.setProps({openAddChat: !this.props.openAddChat});
     }
@@ -141,6 +146,9 @@ class Messenger extends Block{
         if (oldProps?.openAddChat !== newProps?.openAddChat) {
             this.setPropsForChildren(this.children.addChatElement, {openAddChat: newProps?.openAddChat});
         }
+        if (oldProps?.isAddUser !== newProps?.isAddUser) {
+            this.setPropsForChildren(this.children.addUserElement, {chatId: newProps?.openChatId});
+        }
         return true;
     }
 
@@ -153,6 +161,9 @@ class Messenger extends Block{
                     {{/if}}
                     {{#if openSettings }}
                         {{{ SettingsChat }}}
+                    {{/if }}
+                    {{#if isAddUser }}
+                        {{{ addUserElement }}}
                     {{/if }}
                     {{#if openAddChat}}
                         {{{ addChatElement }}}

@@ -15,6 +15,10 @@ export type SignInRequest = {
     password: string
 };
 
+export type SearchResponse = {
+    login: string,
+}
+
 export type UserDTOResponse = {
     id: number;
     first_name: string;

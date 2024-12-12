@@ -7,7 +7,6 @@ import {connect} from "../../utils/Connect.ts";
 import * as chatsService from "../../services/chats.ts";
 
 interface AddChatProps {
-    openAddChat: boolean,
     closeAddChat: (event: FocusEvent) => void,
 }
 
@@ -15,7 +14,6 @@ class AddChat extends Block{
     constructor(props: AddChatProps) {
         super({
             ...props,
-            openAddChat: props.openAddChat,
             closeAddChat: props.closeAddChat,
         });
     }
@@ -36,7 +34,7 @@ class AddChat extends Block{
             onClick: this.props.closeAddChat,
         });
         const InputNameChat = new InputElement({
-            name: "search",
+            name: "name",
             type: "text",
             onBlur: onInputNameChatBind,
         });

@@ -28,4 +28,7 @@ export default class ChatsApi {
     async addUser(data: userAddRequest) {
         return chatsApi.put('/users', { data });
     }
+    async getUsersChat(data: number) {
+        return chatsApi.get(`/${data}/users`);
+    }
 };

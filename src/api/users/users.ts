@@ -5,6 +5,7 @@ import {
     UserDTOResponse,
     ChangePasswordRequest,
     UserDTORequest,
+    SearchResponse,
 } from "../type";
 
 const usersApi = new HTTPTransport("/user");
@@ -22,7 +23,8 @@ export default class UsersApi {
         return usersApi.put("/user", { data });
     }
 
-    async search() {
-        return usersApi.post("/logout");
+    async search(data: SearchResponse) {
+        return usersApi.post("/search", { data });
     }
+
 }
