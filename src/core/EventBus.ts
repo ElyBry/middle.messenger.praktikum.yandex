@@ -18,7 +18,6 @@ export default class EventBus<E extends string> {
     emit<F extends (...args: any) => void>(event: E, ...args: Parameters<F>) :void {
         if (!this.listeners[event]) {
             return;
-            // throw new Error(`Нет события: ${event}`);
         }
         this.listeners[event]!.forEach(function (listener) {
             listener(...args);

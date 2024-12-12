@@ -107,4 +107,3 @@ const mapStateToProps = (state: StateInterface) => {
 }
 
 export default connect(mapStateToProps)(AddChat as unknown as new (newProps: Props) => Block<Props>);
-

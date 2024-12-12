@@ -44,4 +44,3 @@ class User extends Block{
 
 
 export default User;
-

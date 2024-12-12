@@ -32,4 +32,4 @@ function queryStringify(data: StringIndexed, prevKey = ''): string | never {
     return str;
 }
 
-export default queryStringify
+export default queryStringify;

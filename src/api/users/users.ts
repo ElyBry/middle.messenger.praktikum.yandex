@@ -26,5 +26,4 @@ export default class UsersApi {
     async search(data: SearchResponse) {
         return usersApi.post("/search", { data });
     }
-
 }

@@ -29,6 +29,3 @@ function set(object: Indexed | unknown, path: string, value: unknown): Indexed |
 }
 
 export default set;
-
-console.log(set({ foo: 5 }, 'bar.baz', 10)); // { foo: 5, bar: { baz: 10 } }
-console.log(set(3, 'foo.bar', 'baz')); // 3

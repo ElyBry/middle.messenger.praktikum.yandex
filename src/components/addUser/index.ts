@@ -154,4 +154,3 @@ const mapStateToProps = (state: StateInterface) => {
 }
 
 export default connect(mapStateToProps)(AddUser as unknown as new (newProps: Props) => Block<Props>);
-
