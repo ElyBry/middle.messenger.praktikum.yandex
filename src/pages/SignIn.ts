@@ -1,4 +1,4 @@
-import {InputElement, ButtonElement, Link} from "../components";
+import {InputElement, ButtonElement, Link, Spinner} from "../components";
 import styles from '../scss/signInUp.module.scss';
 import Block from "../core/Block.ts";
 import validInputs from "../validators/validInputs.ts";
@@ -49,6 +49,7 @@ class SignIn extends Block {
             class: styles.exitIcon,
             onClick: () => this.props.router.go(CONSTS.signUp),
         });
+        const SpinnerElement = new Spinner();
 
         this.props.login = '';
         this.props.password = '';
@@ -58,7 +59,8 @@ class SignIn extends Block {
             InputLogin,
             InputPassword,
             ButtonLogin,
-            LinkBack
+            LinkBack,
+            SpinnerElement,
         }
     }
 
@@ -98,11 +100,12 @@ class SignIn extends Block {
 
     render() {
         return `
-            {{#if isLoading}}
-                <h1>spinner</h1>
-            {{/if}}
             <div class=${styles.root}>
+                {{#if isLoading}}
+                    {{{ SpinnerElement }}}
+                {{/if}}
                 <div class=${styles.auth}>
+                    
                     <h1>Авторизация</h1>
                     <form>
                         <div class=${styles.left}>

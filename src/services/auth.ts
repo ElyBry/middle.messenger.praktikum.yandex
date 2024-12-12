@@ -8,16 +8,20 @@ const authApi = new AuthApi();
 export const signIn = async (model: SignInRequest) => {
     const handler = new AsyncOperationHandler('signInError');
     await handler.execute(async () => {
-        return await authApi.signin(model);
+        await authApi.signin(model);
+        await checkLoginUser();
+        window.router.go(CONSTS.messenger);
+    }).catch((e: Error) => {
+        console.log("Ошибка авторизации", e.message);
     });
-    checkLoginUser();
-    window.router.go(CONSTS.messenger);
 };
 
 export const signUp = async (model: SignUpRequest) => {
     const handler = new AsyncOperationHandler('signUpError');
     await handler.execute(async () => {
-        return await authApi.signup(model);
+        await authApi.signup(model);
+        await checkLoginUser();
+        window.router.go(CONSTS.messenger);
     });
 };
 
@@ -25,7 +29,6 @@ export const checkLoginUser = async () => {
     const handler = new AsyncOperationHandler();
     return await handler.execute(async () => {
         const response =  await authApi.me();
-
         if (typeof response === 'object' && response !== null) {
             const userResponse = JSON.parse((response as any).response);
             window.store.set({ user: userResponse });

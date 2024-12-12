@@ -12,3 +12,4 @@ export { Link } from './link';
 export { default as TopMenu } from './topMenu';
 export { default as SettingsChatBubble } from './SettingsChatBubble';
 export { default as AddChat } from './addChat';
+export { default as Spinner } from './spinner';

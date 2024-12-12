@@ -8,6 +8,7 @@ import * as chatsService from "../../services/chats.ts";
 
 interface AddChatProps {
     openAddChat: boolean,
+    closeAddChat: (event: FocusEvent) => void,
 }
 
 class AddChat extends Block{
@@ -15,10 +16,10 @@ class AddChat extends Block{
         super({
             ...props,
             openAddChat: props.openAddChat,
+            closeAddChat: props.closeAddChat,
         });
     }
     init() {
-        const onCloseAddChatBind = this.onCloseAddChat.bind(this);
         const onInputNameChatBind = this.onInputNameChat.bind(this);
         const onClickButtonAddChatBind = this.onClickButtonAddChat.bind(this);
 
@@ -32,7 +33,7 @@ class AddChat extends Block{
             label: "Отменить",
             type: "cancel",
             icon: "arrow_back",
-            onClick: onCloseAddChatBind,
+            onClick: this.props.closeAddChat,
         });
         const InputNameChat = new InputElement({
             name: "search",
@@ -54,6 +55,7 @@ class AddChat extends Block{
         }
 
         chatsService.createChats(data);
+        this.setProps({chatName: ''});
     }
 
     onInputNameChat(e: Event) {
@@ -63,8 +65,15 @@ class AddChat extends Block{
         this.setProps({chatName: value});
     }
 
-    onCloseAddChat() {
-        this.setProps({openAddChat: false});
+    componentDidUpdate(oldProps: Props, newProps: Props): boolean {
+        if (oldProps === newProps) {
+            return false;
+        }
+        if (oldProps.chatName !== newProps.chatName) {
+            const input = this.children.InputNameChat as Block;
+            input.setValue(newProps.chatName);
+        }
+        return true;
     }
 
     render() {

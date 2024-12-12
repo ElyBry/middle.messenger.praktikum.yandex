@@ -1,6 +1,15 @@
 import styles from '../scss/chats.module.scss';
 import Block, {Props} from "../core/Block.ts";
-import {AddChat, ButtonElement, Chat, InputElement, ListChats, SettingsChatBubble, TopMenu} from "../components";
+import {
+    AddChat,
+    ButtonElement,
+    Chat,
+    InputElement,
+    ListChats,
+    SettingsChatBubble,
+    Spinner,
+    TopMenu
+} from "../components";
 import * as chatsService from '../services/chats.ts';
 import {CONSTS} from "../CONSTS.ts";
 import {connect} from "../utils/Connect.ts";
@@ -61,7 +70,11 @@ class Messenger extends Block{
 
         const addChatElement = new AddChat({
             openAddChat: this.props.openAddChat,
+            closeAddChat: onClickButtonOpenAddChatBind,
         })
+
+        const SpinnerElement = new Spinner();
+
         const getChats = async (offset: number, limit: number, title?: string) => {
             await chatsService.getChats({offset, limit, title});
         };
@@ -76,6 +89,7 @@ class Messenger extends Block{
             SettingsChat,
             ButtonOpenAddChat,
             addChatElement,
+            SpinnerElement,
         }
     }
     onClickButtonOpenAddChat() {
@@ -125,7 +139,6 @@ class Messenger extends Block{
             return false;
         }
         if (oldProps?.openAddChat !== newProps?.openAddChat) {
-            console.log(newProps?.openAddChat);
             this.setPropsForChildren(this.children.addChatElement, {openAddChat: newProps?.openAddChat});
         }
         return true;
@@ -136,7 +149,7 @@ class Messenger extends Block{
             <div>
                 <div class="${styles.chats}">
                     {{#if isLoading}}
-                        <h1>spinner</h1>
+                        {{{ SpinnerElement }}}
                     {{/if}}
                     {{#if openSettings }}
                         {{{ SettingsChat }}}
