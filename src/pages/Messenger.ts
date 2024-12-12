@@ -1,6 +1,6 @@
 import styles from '../scss/chats.module.scss';
-import Block from "../core/Block.ts";
-import {ButtonElement, Chat, InputElement, ListChats, TopMenu} from "../components";
+import Block, {Props} from "../core/Block.ts";
+import {AddChat, ButtonElement, Chat, InputElement, ListChats, SettingsChatBubble, TopMenu} from "../components";
 import * as chatsService from '../services/chats.ts';
 import {CONSTS} from "../CONSTS.ts";
 import {connect} from "../utils/Connect.ts";
@@ -9,40 +9,17 @@ import {withRouter} from "../routing/WithRouter.ts";
 class Messenger extends Block{
     init() {
         const onEnterInputSearchBind = this.onEnterInputSearch.bind(this);
-        const onClickButtonOpenAddChatBind = this.onClickButtonOpenAddChat.bind(this);
-        const onClickButtonAddChatBind = this.onClickButtonAddChat.bind(this);
-        const onInputNameChatBind = this.onInputNameChat.bind(this);
-        const onCloseAddChatBind = this.onCloseAddChat.bind(this);
         const onSelectChatBind = this.onSelectChat.bind(this);
+        const onAddUserBind = this.onAddUser.bind(this);
+        const onRemoveUserBind = this.onRemoveUser.bind(this);
+        const onChangeAvatarBind = this.onChangeAvatar.bind(this);
+        const onOpenSettingsBind = this.onOpenSettings.bind(this);
+        const onClickButtonOpenAddChatBind = this.onClickButtonOpenAddChat.bind(this);
 
         const InputSearch = new InputElement({
             name: "search",
             type: "text",
             onEnter: onEnterInputSearchBind,
-        });
-
-        const ButtonOpenAddChat = new ButtonElement({
-            label: "",
-            type: "add",
-            icon: "add",
-            onClick: onClickButtonOpenAddChatBind,
-        });
-        const ButtonAddChat = new ButtonElement({
-            label: "Добавить",
-            type: "submit",
-            icon: "save",
-            onClick: onClickButtonAddChatBind
-        })
-        const InputNameChat = new InputElement({
-            name: "search",
-            type: "text",
-            onBlur: onInputNameChatBind,
-        });
-        const ButtonCloseAddChat = new ButtonElement({
-            label: "Отменить",
-            type: "cancel",
-            icon: "arrow_back",
-            onClick: onCloseAddChatBind,
         });
 
         this.props.chats = [];
@@ -53,6 +30,7 @@ class Messenger extends Block{
         this.props.openChatId = -1;
         this.props.openAddChat = false;
         this.props.openAddUser = false;
+        this.props.openSettings = false;
         this.props.user = {};
         this.props.user.name = window.store?.getState()?.user?.display_name || '';
 
@@ -62,15 +40,28 @@ class Messenger extends Block{
         });
 
         const ChatElement = new Chat({
-            chatInfo: this.props.chatInfo,
-            openChat: this.props.openChat,
-            openChatId: this.props.openChatId,
+            onOpenSettings: onOpenSettingsBind,
         });
 
         const Settings = new TopMenu({
             onClick: () => this.props.router.go(CONSTS.settings),
         });
 
+        const SettingsChat = new SettingsChatBubble({
+            onAddUser: onAddUserBind,
+            onRemoveUser: onRemoveUserBind,
+            onChangeAvatar: onChangeAvatarBind,
+        })
+        const ButtonOpenAddChat = new ButtonElement({
+            label: "",
+            type: "add",
+            icon: "add",
+            onClick: onClickButtonOpenAddChatBind,
+        });
+
+        const addChatElement = new AddChat({
+            openAddChat: this.props.openAddChat,
+        })
         const getChats = async (offset: number, limit: number, title?: string) => {
             await chatsService.getChats({offset, limit, title});
         };
@@ -79,40 +70,33 @@ class Messenger extends Block{
         this.children = {
             ...this.children,
             InputSearch,
-            ButtonOpenAddChat,
             ListChatsElement,
             ChatElement,
             Settings,
-            ButtonCloseAddChat,
-            ButtonAddChat,
-            InputNameChat,
+            SettingsChat,
+            ButtonOpenAddChat,
+            addChatElement,
         }
     }
-
     onClickButtonOpenAddChat() {
-        this.setProps({openAddChat: true});
+        this.setProps({openAddChat: !this.props.openAddChat});
     }
-
-    onClickButtonAddChat(e: Event) {
+    onOpenSettings(e: Event) {
         e.preventDefault();
-        const data = {
-            title: this.props.chatName,
-        }
-
-        chatsService.createChats(data);
+        this.setProps({openSettings: !this.props.openSettings});
     }
-
-    onInputNameChat(e: Event) {
-        const target = e.target as HTMLInputElement;
-        const value = target.value;
-
-        this.setProps({chatName: value});
+    onAddUser(e: Event) {
+        e.preventDefault();
+        this.setProps({isAddUser: !this.props.isAddUser});
     }
-
-    onCloseAddChat() {
-        this.setProps({openAddChat: false});
+    onRemoveUser(e: Event) {
+        e.preventDefault();
+        this.setProps({isRemoveUser: !this.props.isRemoveUser});
     }
-
+    onChangeAvatar(e: Event) {
+        e.preventDefault();
+        this.setProps({isChangeAvatar: !this.props.isChangeAvatar});
+    }
     async onSelectChat(chatProps: {id: number, title: string}) {
         if (this.props.openChatId === chatProps.id) {
             return;
@@ -136,6 +120,17 @@ class Messenger extends Block{
         this.setProps({search: value});
     }
 
+    componentDidUpdate(oldProps?: Props, newProps?: Props): boolean {
+        if (oldProps === newProps) {
+            return false;
+        }
+        if (oldProps?.openAddChat !== newProps?.openAddChat) {
+            console.log(newProps?.openAddChat);
+            this.setPropsForChildren(this.children.addChatElement, {openAddChat: newProps?.openAddChat});
+        }
+        return true;
+    }
+
     render() {
         return `
             <div>
@@ -143,18 +138,11 @@ class Messenger extends Block{
                     {{#if isLoading}}
                         <h1>spinner</h1>
                     {{/if}}
+                    {{#if openSettings }}
+                        {{{ SettingsChat }}}
+                    {{/if }}
                     {{#if openAddChat}}
-                        <div class="${styles.module}">
-                            {{{ ButtonCloseAddChat }}}
-                            <h3>Добавление чата</h3>
-                            {{{ InputNameChat }}}
-                            {{#if addChatError }}
-                                {{ addChatError }}
-                            {{/if }}
-                            <div class="${styles.actions}">
-                                {{{ ButtonAddChat }}}
-                            </div>
-                        </div>
+                        {{{ addChatElement }}}
                     {{/if }}
                     <div class="${styles.menu}">
                         {{{ Settings }}}

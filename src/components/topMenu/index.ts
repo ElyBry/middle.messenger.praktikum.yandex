@@ -1,7 +1,6 @@
 import styles from './index.module.scss';
 import Block from "../../core/Block.ts";
 import Avatar from "../avatar";
-import {withRouter} from "../../routing/WithRouter.ts";
 
 interface TopMenuProps {
     onClick?: () => void,
@@ -22,7 +21,7 @@ class TopMenu extends Block {
             AvatarBlock: new Avatar({
                 img: props.avatar || window.store?.getState()?.user?.avatar || '',
             }),
-            UserName: props.display_name || '',
+            UserName: props.display_name || window.store?.getState()?.user?.display_name || '',
             class: props.class || styles.me,
         });
     }
@@ -44,4 +43,4 @@ class TopMenu extends Block {
     }
 }
 
-export default withRouter(TopMenu);
+export default TopMenu;

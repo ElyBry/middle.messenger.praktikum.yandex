@@ -71,6 +71,26 @@ export type LastMessageResponse = {
     user: LastMessageUser,
 }
 
+export type LastMessageRequest = {
+    id: number,
+    created_by: number,
+    avatar: string,
+    last_message: LastMessageUser,
+    title: string,
+    unread_count: number,
+}
+
+export type MessageResponse = {
+    chat_id: number
+    content: string,
+    file: null | object,
+    id: number,
+    is_read: boolean
+    time: string,
+    type: string,
+    user_id: number,
+}
+
 export type ChatDTOResponse = {
     id: number,
     title: string,

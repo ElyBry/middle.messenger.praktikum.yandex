@@ -12,6 +12,14 @@ class Input extends Block{
     constructor(props: InputProps) {
         super(props);
     }
+    getValue() {
+        const input = this.getContent() as HTMLInputElement;
+        return input.value;
+    }
+    setValue(value: string) {
+        const input = this.getContent() as HTMLInputElement;
+        input.value = value;
+    }
 
     render() {
         return `

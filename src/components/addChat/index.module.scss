@@ -1,0 +1,34 @@
+@use "../../scss/var";
+
+.module {
+  position: absolute;
+  z-index: 10;
+  background-color: white;
+
+  @include var.box-shadow;
+  @include var.center-block;
+
+  padding: var.$padding-page;
+  border-radius: var.$border-radius-elements;
+  .inputModule {
+    h3 {
+      margin-top: 5px;
+    }
+    .inputChat {
+      @include var.center-block;
+
+      margin-bottom: var.$margin-elements;
+    }
+    .error {
+      color: var.$error-color;
+
+      @include var.center-block;
+    }
+    .actionsBack {
+      position: absolute;
+    }
+    .actions {
+      @include var.center-block;
+    }
+  }
+}

@@ -41,7 +41,7 @@ export const getTokenChat = async (model: number) => {
                     const wsChatInstance = new WSChat(userId, model, token.token);
                     window.wsChat = wsChatInstance;
                 } else {
-                    window.wsChat._changeSocketAddress(userId, model, token.token);
+                    window.wsChat.changeSocketAddress(userId, model, token.token);
                 }
             }
         } else {

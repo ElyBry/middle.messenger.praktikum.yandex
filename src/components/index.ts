@@ -10,3 +10,5 @@ export { default as Chat } from './chat';
 export { AddFiles } from './addFiles';
 export { Link } from './link';
 export { default as TopMenu } from './topMenu';
+export { default as SettingsChatBubble } from './SettingsChatBubble';
+export { default as AddChat } from './addChat';

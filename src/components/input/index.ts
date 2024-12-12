@@ -50,9 +50,14 @@ class InputElement extends Block{
         return true;
     }
 
-    // public value() {
-    //     return this.children.Input.getContent().value;
-    // }
+    getValue() {
+        const input = this.children.Input as Block;
+        return input.getValue();
+    }
+    setValue(newValue: string) {
+        const input = this.children.Input as Block;
+        return input.setValue(newValue);
+    }
 
     render() {
         return `

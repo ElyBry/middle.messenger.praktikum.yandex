@@ -2,6 +2,7 @@ import styles from './index.module.scss';
 import Block from "../../core/Block.ts";
 import Avatar from "../avatar";
 import {ChatDTOResponse} from "../../api/type.ts";
+import formatTime from "../../utils/time.ts";
 
 export interface ChatProps extends ChatDTOResponse {
     openChatId?: number,
@@ -23,6 +24,8 @@ class Chats extends Block {
     }
 
     render() {
+        const last_message = this.props.last_message?.user?.display_name ? this.props.last_message?.user?.display_name + " : " + this.props.last_message?.content : '';
+        const time = this.props.last_message?.time ? formatTime(this.props.last_message?.time, true) : '';
         return `
             <div class="${styles.chats} {{#if active}} ${styles.active} {{/if}}">
                 <div class="${styles.leftSide}">
@@ -39,13 +42,13 @@ class Chats extends Block {
                             {{ title }}
                         </div>
                         <div class="${styles.message} {{#if isTyping}} typing {{/if}}">
-                            {{last_message}}
+                            ${last_message}
                         </div>
                     </div>
                 </div>
                 
                 <div class="${styles.time}">
-                    {{time}}
+                    ${time}
                 </div>
             </div>
         `

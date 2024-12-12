@@ -1,25 +1,19 @@
 import styles from './index.module.scss';
 import Block from "../../core/Block.ts";
 import {Avatar} from "../index.ts";
-
-interface MessageProps {
-    chat_id: number
-    content: string,
-    file: null | object,
-    id: number,
-    is_read: boolean
-    time: string,
-    type: string,
-    user_id: number,
-}
+import {MessageResponse} from "../../api/type.ts";
+import formatTime from "../../utils/time.ts";
 
 export default class Message extends Block {
-    constructor(props: MessageProps) {
+    constructor(props: MessageResponse) {
         super({
             ...props,
             AvatarMessage: new Avatar({
                 img: '',
-            })
+            }),
+            me: window.store.getState().user?.id === props.user_id,
+            name: window.store.getState().user?.id === props.user_id ? window.store.getState().user?.display_name : props.user_id,
+            time: formatTime(props.time, true),
         });
     }
     render() {
@@ -31,7 +25,7 @@ export default class Message extends Block {
                 <div class="${styles.messages__item}">
                     <div class="${styles.messages__header}">
                         <div class="${styles.name}">
-                            {{user_id}}
+                            {{name}}
                         </div>
                         <div class="${styles.time}">
                             {{time}}

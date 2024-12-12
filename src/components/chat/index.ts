@@ -6,20 +6,10 @@ import {AddFiles} from "../addFiles";
 
 import {Avatar, Message} from "../index.ts";
 import {connect} from "../../utils/Connect.ts";
-import {LastMessageUser} from "../../api/type.ts";
-
-interface ChatInfoProps {
-    id: number,
-    created_by: number,
-    avatar: string,
-    last_message: LastMessageUser,
-    title: string,
-    unread_count: number,
-}
+import {MessageResponse} from "../../api/type.ts";
 
 interface ChatElementProps {
-    pickedChat: ChatInfoProps,
-    onClick?: (event: FocusEvent) => void,
+    onOpenSettings: (event: FocusEvent) => void,
 }
 
 class Chat extends Block{
@@ -28,9 +18,14 @@ class Chat extends Block{
             ...props,
             messages: window.store.getState().messages || {},
             openAddFiles: false,
-            openSettings: true,
-            Messages: Object.values(window.store.getState().messages || {}).map(
-                (messageProps: any) =>
+            onOpenSettings: props.onOpenSettings,
+            Messages: Object.values(window.store.getState().messages as MessageResponse || {})
+                .filter(
+                    (value): value is MessageResponse => value !== null && typeof value === 'object'
+                )
+                .reverse()
+                .map(
+                (messageProps: MessageResponse) =>
                     new Message({
                         ...messageProps,
                     })
@@ -39,8 +34,6 @@ class Chat extends Block{
     }
     init() {
         const onClickButtonSendBind = this.onClickButtonSend.bind(this);
-        const onClickButtonSettingsBind = this.onClickButtonSettings.bind(this);
-        const onChangeMessageBind = this.onChangeMessage.bind(this);
         const onEnterMessageBind = this.onEnterMessage.bind(this);
         const onHoverAddBind = this.onHoverAdd.bind(this);
         const offHoverAddBind = this.offHoverAdd.bind(this);
@@ -51,7 +44,6 @@ class Chat extends Block{
             name: "",
             defValue: "Введите сообщение...",
             type: "text",
-            onChange: onChangeMessageBind,
             onEnter: onEnterMessageBind,
         })
 
@@ -59,7 +51,7 @@ class Chat extends Block{
             label: "",
             type: "open",
             icon: "settings",
-            onClick: onClickButtonSettingsBind,
+            onClick: this.props.onOpenSettings,
         })
 
         const ButtonAdd = new ButtonElement({
@@ -70,7 +62,7 @@ class Chat extends Block{
                 mouseover: onHoverAddBind,
                 mouseout: offHoverAddBind,
             }
-        })
+        });
 
         const ButtonSend = new ButtonElement({
             label: "",
@@ -113,54 +105,47 @@ class Chat extends Block{
         }
         this.sendMessage(value);
     }
-    onChangeMessage(e: Event) {
-        e.preventDefault();
-        const target = e.target as HTMLInputElement;
-        const value = target.value;
 
-        this.setProps({
-            message: value
-        });
-    }
     sendMessage(value: string) {
         window.wsChat.sendMessage(value);
-    }
-
-    onClickButtonSettings() {
-        this.setProps({openSettings: !this.props.openSettings});
+        const input = this.children.InputMessage as Block;
+        input.setValue('');
     }
 
     onClickButtonSend() {
-        if (!this.props.message) {
+        const input = this.children.InputMessage as Block;
+        const value = input.getValue();
+        if (!value) {
             console.log(`Сообщение пустое`);
             return;
         }
-        this.sendMessage(this.props.message);
+        this.sendMessage(value);
     }
 
     componentDidUpdate(oldProps: Props, newProps: Props): boolean {
         if (oldProps === newProps) {
             return false;
         }
-
         this.setPropsForChildren(this.children.AvatarChat, { img: newProps?.pickedChat?.avatar });
         if (newProps && newProps.messages) {
-            this.children.Messages = Object.values(newProps.messages).map(
-                (messageProps: any) =>
-                    new Message({
-                        ...messageProps,
-                    })
-            );
+            this.children.Messages = Object.values(newProps.messages as MessageResponse || {})
+                .filter(
+                    (value): value is MessageResponse => value !== null
+                        && typeof value === 'object'
+                )
+                .reverse()
+                .map(
+                    (messageProps: MessageResponse) =>
+                        new Message({
+                            ...messageProps,
+                        })
+                )
         }
         return true;
     }
 
     render() {
         const title = this.props?.pickedChat?.title || '';
-        const messages = this.props.messages;
-        if (messages !== null && Array.isArray(messages)) {
-
-        }
         return `
             {{#if openChat }}
                 <div class="${styles.message__window}">
@@ -173,9 +158,6 @@ class Chat extends Block{
                         </div>
                         <div class="${styles.actions}">
                             {{{ ButtonOptions }}}
-                            {{#if openSettings }}
-                                {{{ SettingsChat }}}
-                            {{/if }}
                         </div>
                     </div>
                     <div class="${styles.chat}">

@@ -1,25 +1,14 @@
 import EventBus from "../core/EventBus.ts";
+import {getChatsResponse, MessageResponse, UserDTOResponse} from "../api/type.ts";
 
 export enum StoreEvents {
     Updated = 'Updated',
 }
 
 interface Indexed {
-    user?: {
-        id: number,
-        display_name: string,
-        avatar: string,
-    },
-    pickedChat?: {
-        title: string,
-        avatar: string,
-    }
-    messages?: [
-        {
-            id: number,
-            content: string,
-        }
-    ]
+    user?: UserDTOResponse,
+    pickedChat?: getChatsResponse
+    messages?: MessageResponse
 }
 
 export default class Store extends EventBus<string> {

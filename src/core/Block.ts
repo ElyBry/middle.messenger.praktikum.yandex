@@ -84,6 +84,15 @@ export default abstract class Block<T extends Props = Props> {
     init() {
     }
 
+    getValue() {
+        const input = this.getContent() as HTMLInputElement;
+        return input.value;
+    }
+    setValue(value: string) {
+        const input = this.getContent() as HTMLInputElement;
+        input.value = value;
+    }
+
     private _componentDidUnmount() {
         this.componentDidUnmount();
     }
