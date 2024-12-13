@@ -1,12 +1,13 @@
 import styles from '../scss/profile.module.scss';
 import Block, {Props} from "../core/Block.ts";
-import {Avatar, ButtonElement, Field, InputElement, Link} from "../components";
+import {Avatar, ButtonElement, ChangeAvatar, ChangePassword, Field, InputElement, Link} from "../components";
 import validInputs from "../validators/validInputs.ts";
 import {connect} from "../utils/Connect.ts";
 import {withRouter} from "../routing/WithRouter.ts";
 import {CONSTS} from "../CONSTS.ts";
 import * as authService from "../services/auth.ts";
 import * as userService from "../services/users.ts";
+import {UserDTOResponse} from "../api/type.ts";
 
 const { checkLogin, checkEmail, checkFirstSecondNames, checkPhone, checkPassword } = validInputs;
 
@@ -38,7 +39,6 @@ class Settings extends Block {
         const onOpenChangerAvatarBind = this.onOpenChangerAvatar.bind(this);
         const onCloseChangerAvatarBind = this.onCloseChangerAvatar.bind(this);
         const onLoadAvatarBind = this.onLoadAvatar.bind(this);
-        const onSaveAvatarBind = this.onSaveAvatar.bind(this);
         const onOpenChangerPasswordBind = this.onOpenChangerPassword.bind(this);
         const onCloseChangerPasswordBind = this.onCloseChangerPassword.bind(this);
         const onSavePasswordBind = this.onSavePassword.bind(this);
@@ -65,13 +65,13 @@ class Settings extends Block {
         const ButtonChangeAvatar = new ButtonElement({
             label: "Поменять аватар",
             type: "change",
-            icon: "change",
+            icon: "attach_file",
             onClick: onOpenChangerAvatarBind,
         });
         const ButtonChangePassword = new ButtonElement({
             label: "Поменять пароль",
             type: "change",
-            icon: "change",
+            icon: "password",
             onClick: onOpenChangerPasswordBind,
         })
 
@@ -87,23 +87,11 @@ class Settings extends Block {
             icon: "save",
             onClick: onSavePasswordBind,
         });
-        const ButtonConfirmChangeAvatar = new ButtonElement({
-            label: "Сохранить",
-            type: "submit",
-            icon: "save",
-            onClick: onSaveAvatarBind,
-        });
         const ButtonCancel = new ButtonElement({
             label: "Отменить",
             type: "cancel",
             icon: "arrow_back",
             onClick: onCancelBind,
-        });
-        const ButtonCancelChangeAvatar = new ButtonElement({
-            label: "Отменить",
-            type: "cancel",
-            icon: "arrow_back",
-            onClick: onCloseChangerAvatarBind,
         });
         const ButtonCancelChangePassword = new ButtonElement({
             label: "Отменить",
@@ -140,7 +128,6 @@ class Settings extends Block {
         this.props.phone = this.props.user.phone;
         this.props.login = this.props.user.login;
         this.props.password = '';
-        this.props.changeAvatar = false;
         this.props.isChange = false;
 
         const InputAvatar = new InputElement({
@@ -231,6 +218,12 @@ class Settings extends Block {
         const AvatarBlock = new Avatar({
             img: window.store?.getState()?.user?.avatar || '',
         })
+        const ChangeAvatarBlock = new ChangeAvatar({
+            onCancel: onCloseChangerAvatarBind,
+        });
+        const ChangePasswordBlock = new ChangePassword({
+            onCancel: onCloseChangerPasswordBind,
+        })
 
         this.children = {
             ...this.children,
@@ -255,11 +248,11 @@ class Settings extends Block {
             FieldSecondName,
             ButtonChangeAvatar,
             ButtonChangePassword,
-            ButtonCancelChangeAvatar,
+            ChangeAvatarBlock,
             ButtonCancelChangePassword,
             ButtonConfirmChangePassword,
-            ButtonConfirmChangeAvatar,
             AvatarBlock,
+            ChangePasswordBlock,
         };
     };
 
@@ -354,15 +347,6 @@ class Settings extends Block {
         e.preventDefault();
         this.setProps({isChangeAvatar: false});
     }
-    onSaveAvatar(e: Event) {
-        e.preventDefault()
-        // Проверка типа
-        // Загрузка через Api
-        console.log("Меняем аву");
-        // Если успешно
-        this.setProps({isChangeAvatar: false});
-    }
-
 
     onOpenChangerPassword(e: Event) {
         e.preventDefault();
@@ -434,13 +418,15 @@ class Settings extends Block {
         if (oldProps === newProps) {
             return false;
         }
+        this.setPropsForChildren(this.children.FieldFirstName, { value: newProps.user?.first_name || '' });
+        this.setPropsForChildren(this.children.FieldSecondName, { value: newProps.user?.second_name || ''});
+        this.setPropsForChildren(this.children.FieldNumberPhone, { value: newProps.user?.phone || ''});
+        this.setPropsForChildren(this.children.FieldEmail, { value: newProps.user?.email || ''});
+        this.setPropsForChildren(this.children.FieldDisplayName, { value: newProps.user?.display_name || ''});
+        if (oldProps.user?.avatar !== newProps.user?.avatar) {
+            this.setPropsForChildren(this.children.AvatarBlock, { img: newProps.user?.avatar });
+        }
 
-        this.setPropsForChildren(this.children.FieldFirstName, { value: newProps.user.first_name });
-        this.setPropsForChildren(this.children.FieldSecondName, { value: newProps.user.second_name });
-        this.setPropsForChildren(this.children.FieldNumberPhone, { value: newProps.user.phone });
-        this.setPropsForChildren(this.children.FieldEmail, { value: newProps.user.email });
-        this.setPropsForChildren(this.children.FieldDisplayName, { value: newProps.user.display_name });
-        this.setPropsForChildren(this.children.AvatarBlock, { value: newProps.user.avatar });
         return true;
     }
 
@@ -448,6 +434,12 @@ class Settings extends Block {
         if (this.props.isChange) {
             return `
                 <div class=${styles.root}>
+                    {{#if isChangeAvatar}}
+                        {{{ ChangeAvatarBlock }}}
+                    {{/if }}
+                    {{#if isChangePassword}}
+                        {{{ ChangePasswordBlock }}}
+                    {{/if }}
                     <div class=${styles.profile}>
                         {{{ BackLink }}}
                         <form onsubmit="">
@@ -465,9 +457,8 @@ class Settings extends Block {
                                 {{{ InputPhone }}}
                                 {{{ InputEmail }}}
                             </div>
-                            <div class=${styles.block}>
-                                {{{ InputPassword }}}
-                                {{{ InputPasswordConfirm }}}
+                            <div class="${styles.block}">
+                                {{{ ButtonChangePassword }}}
                             </div>
                             <div class="${styles.block}">
                                 {{{ ButtonCancel }}}
@@ -508,23 +499,13 @@ class Settings extends Block {
 interface StateInterface {
     isLoading: boolean;
     changeProfileError: string;
-    first_name: string,
-    second_name: string,
-    display_name: string,
-    login: string,
-    email: string,
-    phone: string,
+    user: UserDTOResponse;
 }
 const mapStateToProps = (state: StateInterface) => {
     return {
         isLoading: state.isLoading,
         changeProfileError: state.changeProfileError,
-        first_name: state.first_name,
-        second_name: state.second_name,
-        display_name: state.display_name,
-        login: state.login,
-        email: state.email,
-        phone: state.phone,
+        user: state.user,
     }
 }
 

@@ -5,7 +5,7 @@ import {
     ButtonElement,
     Chat,
     InputElement,
-    ListChats,
+    ListChats, RemoveUser,
     SettingsChatBubble,
     Spinner,
     TopMenu
@@ -32,11 +32,11 @@ class Messenger extends Block{
         });
 
         this.props.chats = [];
-        this.props.chatInfo = [];
         this.props.gotoSettings = () => this.props.router.go(CONSTS.settings);
         this.props.search = '';
         this.props.openChat = false;
         this.props.openChatId = -1;
+        this.props.openChatTitle = '';
         this.props.openAddChat = false;
         this.props.openAddUser = false;
         this.props.openSettings = false;
@@ -60,7 +60,7 @@ class Messenger extends Block{
             onAddUser: onAddUserBind,
             onRemoveUser: onRemoveUserBind,
             onChangeAvatar: onChangeAvatarBind,
-        })
+        });
         const ButtonOpenAddChat = new ButtonElement({
             label: "",
             type: "add",
@@ -71,11 +71,17 @@ class Messenger extends Block{
         const addChatElement = new AddChat({
             openAddChat: this.props.openAddChat,
             closeAddChat: onClickButtonOpenAddChatBind,
-        })
+        });
         const addUserElement = new AddUser({
             chatId: this.props.openChatId,
             closeAdd: onAddUserBind,
-        })
+            chatTitle: this.props.openChatTitle,
+        });
+        const removeUserElement = new RemoveUser({
+            chatId: this.props.openChatId,
+            chatTitle: this.props.openChatTitle,
+            closeRemove: onRemoveUserBind,
+        });
         const SpinnerElement = new Spinner();
 
         const getChats = async (offset: number, limit: number, title?: string) => {
@@ -94,9 +100,9 @@ class Messenger extends Block{
             addChatElement,
             SpinnerElement,
             addUserElement,
+            removeUserElement,
         }
     }
-
     onClickButtonOpenAddChat() {
         this.setProps({openAddChat: !this.props.openAddChat});
     }
@@ -120,7 +126,10 @@ class Messenger extends Block{
         if (this.props.openChatId === chatProps.id) {
             return;
         }
-        this.setProps({openChatId: chatProps.id});
+        this.setProps({
+            openChatId: chatProps.id,
+            openChatTitle: chatProps.title
+        });
         this.setPropsForChildren(this.children.ListChatsElement, {openChatId: chatProps.id});
         await chatsService.getTokenChat(chatProps.id);
 
@@ -147,7 +156,16 @@ class Messenger extends Block{
             this.setPropsForChildren(this.children.addChatElement, {openAddChat: newProps?.openAddChat});
         }
         if (oldProps?.isAddUser !== newProps?.isAddUser) {
-            this.setPropsForChildren(this.children.addUserElement, {chatId: newProps?.openChatId});
+            this.setPropsForChildren(this.children.addUserElement, {
+                chatId: newProps?.openChatId,
+                chatTitle: newProps?.openChatTitle,
+            });
+        }
+        if (oldProps?.isRemoveUser !== newProps?.isRemoveUser) {
+            this.setPropsForChildren(this.children.removeUserElement, {
+                chatId: newProps?.openChatId,
+                chatTitle: newProps?.openChatTitle,
+            })
         }
         return true;
     }
@@ -161,6 +179,9 @@ class Messenger extends Block{
                     {{/if}}
                     {{#if openSettings }}
                         {{{ SettingsChat }}}
+                    {{/if }}
+                    {{#if isRemoveUser }}
+                        {{{ removeUserElement }}}
                     {{/if }}
                     {{#if isAddUser }}
                         {{{ addUserElement }}}

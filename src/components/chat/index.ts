@@ -114,14 +114,25 @@ class Chat extends Block{
 
     onClickButtonSend() {
         const input = this.children.InputMessage as Block;
-        const value = input.getValue();
+        const value = input.getValue() as string;
         if (!value) {
             console.log(`Сообщение пустое`);
             return;
         }
         this.sendMessage(value);
     }
-
+    scrollToBottom(element: Block) {
+        if (element) {
+            const messageElement = element.element;
+            if (messageElement) {
+                messageElement.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "start"
+                });
+            }
+        }
+    }
     componentDidUpdate(oldProps: Props, newProps: Props): boolean {
         if (oldProps === newProps) {
             return false;
@@ -140,6 +151,10 @@ class Chat extends Block{
                             ...messageProps,
                         })
                 )
+            const lastMessage = this.children.Messages[this.children.Messages.length - 1];
+            setTimeout(() => {
+                this.scrollToBottom(lastMessage);
+            }, 0)
         }
         return true;
     }

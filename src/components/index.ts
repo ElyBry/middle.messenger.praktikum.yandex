@@ -15,3 +15,6 @@ export { default as AddChat } from './addChat';
 export { default as Spinner } from './spinner';
 export { default as AddUser } from './addUser';
 export { default as User } from './users';
+export { default as RemoveUser } from './removeUser';
+export { default as ChangeAvatar } from './changeAvatar';
+export { default as ChangePassword } from './changePassword';

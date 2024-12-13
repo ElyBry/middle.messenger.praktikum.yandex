@@ -3,6 +3,8 @@ import Block from "../../core/Block.ts";
 interface AvatarProps {
     img: string,
     alt?: string,
+    width?: number,
+    height?: number,
 }
 
 export default class Avatar extends Block {
@@ -24,6 +26,6 @@ export default class Avatar extends Block {
 
     render() {
         const imgSrc = this.props.img ? `https://ya-praktikum.tech/api/v2/resources${this.props.img}` : 'public/img/icons/iconApp.webp';
-        return `<img id="avatar" src="${imgSrc}" alt="{{ alt }}" "/>`
+        return `<img id="avatar" src="${imgSrc}" alt="{{ alt }}" width="{{ width }}" height="{{ height }}" "/>`
     }
 }

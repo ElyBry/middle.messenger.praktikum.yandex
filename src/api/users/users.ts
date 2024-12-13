@@ -1,7 +1,6 @@
 import HTTPTransport from "../../HTTP/HTTPTransport";
 import {
     APIErrorResponse,
-    SignInRequest,
     UserDTOResponse,
     ChangePasswordRequest,
     UserDTORequest,
@@ -15,12 +14,14 @@ export default class UsersApi {
         return usersApi.put("/profile", { data });
     }
 
-    async changeAvatar(data: SignInRequest): Promise<UserDTOResponse | APIErrorResponse | unknown> {
-        return usersApi.put("/profile/avatar", { data });
+    async changeAvatar(data: File): Promise<UserDTOResponse | APIErrorResponse | unknown> {
+        const formData = new FormData();
+        formData.append("avatar", data);
+        return usersApi.put("/profile/avatar", { data: formData });
     }
 
     async changePassword(data: ChangePasswordRequest): Promise<APIErrorResponse | unknown> {
-        return usersApi.put("/user", { data });
+        return usersApi.put("/password", { data });
     }
 
     async search(data: SearchResponse) {

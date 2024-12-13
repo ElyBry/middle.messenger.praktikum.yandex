@@ -16,8 +16,12 @@ class User extends Block{
             user: props.user,
             Avatar: new Avatar({
                 img: props.user.avatar,
+                height: 65,
+                width: 65,
             }),
-
+            events: {
+                click: props.onClick,
+            }
         });
     }
 
@@ -25,7 +29,7 @@ class User extends Block{
         const name = this.props.user.first_name + " " + this.props.user.second_name;
         const display_name = this.props.user.display_name || '';
         return `
-            <div class="${styles.main}">
+            <div class="${styles.main} {{#if active}} ${styles.active} {{/if}}">
                 <div class="${styles.avatar}">
                     {{{ Avatar }}}
                 </div>

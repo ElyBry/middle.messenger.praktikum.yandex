@@ -84,8 +84,11 @@ export default abstract class Block<T extends Props = Props> {
     init() {
     }
 
-    getValue() {
+    getValue(is?: string): string | object {
         const input = this.getContent() as HTMLInputElement;
+        if (is == 'file' && input.files) {
+            return input.files[0];
+        }
         return input.value;
     }
     setValue(value: string) {

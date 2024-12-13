@@ -48,5 +48,10 @@ window.router.use(CONSTS.signIn, Pages.SignIn)
 if (!check) {
     window.router.go(CONSTS.signIn);
 } else {
-    window.router.go(window.location.pathname);
+    const currentPath = window.location.pathname;
+    if (currentPath === CONSTS.signIn || currentPath === CONSTS.signUp) {
+        window.router.go(CONSTS.messenger);
+    } else {
+        window.router.go(currentPath);
+    }
 }

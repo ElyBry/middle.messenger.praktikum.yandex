@@ -33,8 +33,8 @@ export type UserDTOResponse = {
 export type UserDTORequest = Omit<UserDTOResponse, 'id' | 'avatar'>;
 
 export type ChangePasswordRequest = {
-    password: string,
-    password_confirm: string,
+    oldPassword: string,
+    newPassword: string,
 }
 
 export type getChatsRequest = {

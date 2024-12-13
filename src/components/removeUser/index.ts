@@ -1,39 +1,36 @@
 import styles from './index.module.scss';
 import Block, {Props} from "../../core/Block.ts";
-import {InputElement} from "../input";
 import {ButtonElement} from "../button";
 
 import {connect} from "../../utils/Connect.ts";
 import * as chatsService from "../../services/chats.ts";
-import * as usersService from "../../services/users.ts";
 import {UserDTOResponse} from "../../api/type.ts";
 import {User} from "../index.ts";
 
-interface AddUserProps {
-    closeAdd: (event: FocusEvent) => void,
+interface RemoveUserProps {
+    closeRemove: (event: FocusEvent) => void,
     chatId: number,
     searchUsers: UserDTOResponse[],
     chatTitle: string,
 }
 
-class AddUser extends Block{
-    constructor(props: AddUserProps) {
+class RemoveUser extends Block{
+    constructor(props: RemoveUserProps) {
         super({
             ...props,
-            closeAdd: props.closeAdd,
-            searchUsers: [],
+            closeRemove: props.closeRemove,
+            chatUsers: [],
             chatId: props.chatId,
             name: '',
             usersList: [],
         });
     }
     init() {
-        const onInputNameBind = this.onInputName.bind(this);
-        const onClickButtonAddBind = this.onClickButtonAdd.bind(this);
+        const onClickButtonAddBind = this.onClickButtonRemove.bind(this);
         const onSelectUserBind = this.onSelectUser.bind(this);
 
-        const ButtonAdd = new ButtonElement({
-            label: "Добавить",
+        const ButtonRemove = new ButtonElement({
+            label: "Удалить",
             type: "submit",
             icon: "save",
             onClick: onClickButtonAddBind
@@ -42,23 +39,20 @@ class AddUser extends Block{
             label: "Отменить",
             type: "cancel",
             icon: "arrow_back",
-            onClick: this.props.closeAdd,
+            onClick: this.props.closeRemove,
         });
-        const InputName = new InputElement({
-            label: "Ник пользователя",
-            name: "name",
-            type: "text",
-            onEnter: onInputNameBind,
-            onBlur: onInputNameBind,
-        });
+
         this.props.pickedUser = {};
         this.props.onSelectUser = onSelectUserBind;
         this.children = {
             ...this.children,
             ButtonClose,
-            InputName,
-            ButtonAdd,
+            ButtonRemove,
         }
+    }
+
+    async getUsers(chatId: number) {
+        await chatsService.getUsersChat(chatId);
     }
     onSelectUser(user: UserDTOResponse) {
         const userExists = this.props.pickedUsers?.some((existingUser: UserDTOResponse) => existingUser.id === user.id);
@@ -71,7 +65,7 @@ class AddUser extends Block{
             this.setProps({ pickedUsers: updatedUsers });
         }
     }
-    onClickButtonAdd(e: Event) {
+    onClickButtonRemove(e: Event) {
         e.preventDefault();
         const users = this.props.pickedUsers;
 
@@ -80,18 +74,9 @@ class AddUser extends Block{
             chatId: this.props.chatId,
         };
 
-        chatsService.addUsers(data);
-        const input = this.children.InputName as Block;
-        input.setValue('');
-        window.store.set({searchUsers: []});
-        this.props.closeAdd(e);
-    }
-
-    onInputName(e: Event) {
-        const target = e.target as HTMLInputElement;
-        const value = target.value;
-
-        usersService.getUsers( {login: value});
+        chatsService.deleteUsers(data);
+        this.getUsers(this.props.chatId);
+        this.props.closeRemove(e);
     }
 
     componentDidUpdate(oldProps: Props, newProps: Props): boolean {
@@ -102,8 +87,11 @@ class AddUser extends Block{
             const input = this.children.InputName as Block;
             input.setValue(newProps.name);
         }
-        if (oldProps.searchUsers !== newProps.searchUsers) {
-            this.children.usersList = newProps.searchUsers?.map((userProps : UserDTOResponse) => {
+        if (oldProps.chatId !== newProps.chatId) {
+            this.getUsers(this.props.chatId);
+        }
+        if (oldProps.chatUsers !== newProps.chatUsers) {
+            this.children.usersList = newProps.chatUsers?.map((userProps : UserDTOResponse) => {
                 return new User({
                     user: userProps,
                     active: this.props.pickedUsers?.some((user: UserDTOResponse) => user.id === userProps.id),
@@ -132,23 +120,20 @@ class AddUser extends Block{
         return `
             <div class="${styles.module}">
                 <form class="${styles.inputModule}">
-                    <h3>Добавление пользователя</h3>
+                    <h3>Удаление пользователя</h3>
                     <h4>В чат {{ chatTitle }}</h4>
-                    <div class="${styles.input}">
-                        {{{ InputName }}}
-                    </div>
                     <div class="${styles.users}">
                         {{#each usersList}}
                             {{{ this }}}
                         {{/each }}
                     </div>
                     <div class="${styles.error}">
-                        {{#if addUserError }}
-                            {{ addUserError }}
+                        {{#if removeUserError }}
+                            {{ removeUserError }}
                         {{/if }}
                     </div>
                     <div class="${styles.actions}">
-                        {{{ ButtonAdd }}}
+                        {{{ ButtonRemove }}}
                         {{{ ButtonClose }}}
                     </div>
                 </form>
@@ -158,14 +143,14 @@ class AddUser extends Block{
 }
 
 interface StateInterface {
-    addUserError: string,
-    searchUsers: UserDTOResponse[],
+    removeUserError: string,
+    chatUsers: UserDTOResponse[],
 }
 const mapStateToProps = (state: StateInterface) => {
     return {
-        addUserError: state.addUserError,
-        searchUsers: state.searchUsers,
+        removeUserError: state.removeUserError,
+        chatUsers: state.chatUsers,
     }
 }
 
-export default connect(mapStateToProps)(AddUser as unknown as new (newProps: Props) => Block<Props>);
+export default connect(mapStateToProps)(RemoveUser as unknown as new (newProps: Props) => Block<Props>);

@@ -71,10 +71,8 @@ export default class WSChat {
             console.log("Сообщение:", event.data);
             const existingMessage = window.store.getState().messages;
             const newMessage = JSON.parse(event.data);
-            if (existingMessage) {
-                console.log(existingMessage, newMessage);
+            if (existingMessage && Array.isArray(existingMessage)) {
                 const combo = addMessage(existingMessage, newMessage);
-                console.log(combo);
                 window.store.set({messages: combo});
             } else {
                 window.store.set({messages: newMessage});

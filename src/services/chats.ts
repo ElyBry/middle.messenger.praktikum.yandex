@@ -50,16 +50,25 @@ export const getTokenChat = async (model: number) => {
     })
 };
 
-export const addUser = async (model: userAddRequest) => {
+export const addUsers = async (model: userAddRequest) => {
     const handler = new AsyncOperationHandler('addUserError');
     await handler.execute(async () => {
         await chatsApi.addUser(model);
     })
 };
 
+export const deleteUsers = async (model: userAddRequest) => {
+    const handler = new AsyncOperationHandler('removeUserError');
+    await handler.execute(async () => {
+        await chatsApi.removeUser(model);
+    })
+};
+
 export const getUsersChat = async (model: number) => {
     const handler = new AsyncOperationHandler('getUsersChatError');
-    await handler.execute(async () => {
-        await chatsApi.getUsersChat(model);
-    })
+    const chatUsers = await handler.execute(async () => {
+        return await chatsApi.getUsersChat(model);
+    });
+    console.log(chatUsers);
+    window.store.set({chatUsers});
 }

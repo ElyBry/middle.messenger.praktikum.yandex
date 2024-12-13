@@ -16,17 +16,17 @@ export default class ChatsApi {
     async createChat(data: CreateChatRequest): Promise< CreateChatResponse | APIErrorResponse | unknown> {
         return chatsApi.post("", { data } );
     }
-
     async deleteChats(data: string) {
         return chatsApi.delete("", { data });
     }
-
     async getTokenChat(data: number) {
         return chatsApi.post(`/token/${data}`);
     }
-
     async addUser(data: userAddRequest) {
         return chatsApi.put('/users', { data });
+    }
+    async removeUser(data: userAddRequest) {
+        return chatsApi.delete(`/users`, { data });
     }
     async getUsersChat(data: number) {
         return chatsApi.get(`/${data}/users`);

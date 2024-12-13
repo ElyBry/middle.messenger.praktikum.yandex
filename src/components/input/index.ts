@@ -50,8 +50,11 @@ class InputElement extends Block{
         return true;
     }
 
-    getValue() {
+    getValue(is?: string) {
         const input = this.children.Input as Block;
+        if (is === 'file') {
+            return input.getValue(is);
+        }
         return input.getValue();
     }
     setValue(newValue: string) {

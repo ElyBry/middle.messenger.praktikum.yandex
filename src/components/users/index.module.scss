@@ -5,8 +5,15 @@
   flex-direction: row;
   vertical-align: top;
   width: 100%;
+  cursor: pointer;
+
   .avatar {
     margin-right: var.$margin-elements;
+
+    @include var.mini-avatars;
+
+    width: 65px;
+    height: 65px;
   }
 }
 

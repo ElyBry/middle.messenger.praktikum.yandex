@@ -77,7 +77,9 @@ class HTTPTransport {
             );
 
             xhr.withCredentials = true;
-            xhr.setRequestHeader('Content-type', 'application/json');
+            if (!(data instanceof FormData)) {
+                xhr.setRequestHeader('Content-type', 'application/json');
+            }
 
             Object.keys(headers).forEach(key => {
                 xhr.setRequestHeader(key, headers[key]);
@@ -102,7 +104,7 @@ class HTTPTransport {
             if (isGet || !data) {
                 xhr.send();
             } else {
-                xhr.send(JSON.stringify(data));
+                xhr.send(data instanceof FormData ? data : JSON.stringify(data));
             }
         });
     };
