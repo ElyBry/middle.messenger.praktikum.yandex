@@ -1,0 +1,21 @@
+@use "../../scss/var";
+
+.module {
+  width: 70vw;
+  height: 100vh;
+  overflow: hidden;
+
+  @include var.center-block;
+
+  position: absolute;
+  z-index: 10;
+  .inputModule {
+    background-color: white;
+
+    @include var.box-shadow;
+    @include var.center-block;
+
+    padding: var.$padding-page;
+    border-radius: var.$border-radius-elements;
+  }
+}

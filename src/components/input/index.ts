@@ -1,5 +1,5 @@
 import Block from "../../core/Block.ts";
-import styles from './input.module.scss';
+import styles from './index.module.scss';
 import { Input } from "./input.ts";
 import { ErrorLine } from "./error.ts";
 
@@ -7,6 +7,7 @@ interface InputElementProps {
     errorText?: string,
     name: string,
     label?: string,
+    value?: string | number | boolean,
     defValue?: string,
     type?: string,
     required?: boolean,
@@ -47,6 +48,18 @@ class InputElement extends Block{
         }
         this.setPropsForChildren(this.children.ErrorLine, newProps);
         return true;
+    }
+
+    getValue(is?: string) {
+        const input = this.children.Input as Block;
+        if (is === 'file') {
+            return input.getValue(is);
+        }
+        return input.getValue();
+    }
+    setValue(newValue: string) {
+        const input = this.children.Input as Block;
+        return input.setValue(newValue);
     }
 
     render() {

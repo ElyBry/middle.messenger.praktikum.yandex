@@ -2,7 +2,7 @@ import EventBus from "./EventBus";
 import Handlebars from "handlebars";
 import { nanoid } from "nanoid";
 
-interface Props {
+export interface Props {
     [key: string]: any;
 }
 
@@ -14,6 +14,7 @@ export default abstract class Block<T extends Props = Props> {
     static EVENTS = {
         INIT: "init",
         FLOW_CDM: "flow:component-did-mount",
+        FLOW_CDUM: "flow:component-did-unmount",
         FLOW_CDU: "flow:component-did-update",
         FLOW_RENDER: "flow:render"
     } as const;
@@ -70,6 +71,7 @@ export default abstract class Block<T extends Props = Props> {
     private _registerEvents(eventBus: EventBus<any>) {
         eventBus.on(Block.EVENTS.INIT, this._init.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CDUM, this._componentDidUnmount.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
         eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
@@ -82,10 +84,28 @@ export default abstract class Block<T extends Props = Props> {
     init() {
     }
 
+    getValue(is?: string): string | object {
+        const input = this.getContent() as HTMLInputElement;
+        if (is == 'file' && input.files) {
+            return input.files[0];
+        }
+        return input.value;
+    }
+    setValue(value: string) {
+        const input = this.getContent() as HTMLInputElement;
+        input.value = value;
+    }
+
+    private _componentDidUnmount() {
+        this.componentDidUnmount();
+    }
+
     private _componentDidMount() {
         this.componentDidMount();
     }
-
+    componentDidUnmount() {
+        this._removeEvents();
+    }
     componentDidMount() {}
 
     dispatchComponentDidMount() {

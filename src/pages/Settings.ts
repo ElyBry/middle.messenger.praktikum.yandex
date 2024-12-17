@@ -1,7 +1,13 @@
 import styles from '../scss/profile.module.scss';
-import Block from "../core/Block.ts";
-import {ButtonElement, InputElement} from "../components";
+import Block, {Props} from "../core/Block.ts";
+import {Avatar, ButtonElement, ChangeAvatar, ChangePassword, Field, InputElement, Link} from "../components";
 import validInputs from "../validators/validInputs.ts";
+import {connect} from "../utils/Connect.ts";
+import {withRouter} from "../routing/WithRouter.ts";
+import {CONSTS} from "../CONSTS.ts";
+import * as authService from "../services/auth.ts";
+import * as userService from "../services/users.ts";
+import {UserDTOResponse} from "../api/type.ts";
 
 const { checkLogin, checkEmail, checkFirstSecondNames, checkPhone, checkPassword } = validInputs;
 
@@ -16,9 +22,8 @@ interface UserInputs {
     password?: string;
 }
 
-export default class Profile extends Block {
+class Settings extends Block {
     init() {
-        const onChangeAvatarBind = this.onChangeAvatar.bind(this);
         const onChangeDisplayNameBind = this.onChangeDisplayName.bind(this);
         const onChangeFirstNameBind = this.onChangeFirstName.bind(this);
         const onChangeSecondNameBind = this.onChangeSecondName.bind(this);
@@ -31,65 +36,12 @@ export default class Profile extends Block {
         const onChangeBind = this.onChange.bind(this);
         const onCancelBind = this.onCancel.bind(this);
         const onExitBind = this.onExit.bind(this);
-
-        const InputAvatar = new InputElement({
-            name: "avatar",
-            label: "Аватар",
-            type: "file",
-            onBlur: onChangeAvatarBind,
-        });
-
-        const InputDisplayName = new InputElement({
-            name: "display_name",
-            label: "Отображаемое имя",
-            defValue: "Ivanchella",
-            type: "text",
-            onBlur: onChangeDisplayNameBind,
-        });
-
-        const InputFirstName = new InputElement({
-            name: "first_name",
-            label: "Имя",
-            defValue: "Ivan",
-            type: "text",
-            onBlur: onChangeFirstNameBind,
-        });
-
-        const InputSecondName = new InputElement({
-            name: "second_name",
-            label: "Фамилия",
-            defValue: "Ivanov",
-            type: "text",
-            onBlur: onChangeSecondNameBind,
-        });
-
-        const InputPhone = new InputElement({
-            name: "phone",
-            label: "Номер телефона",
-            defValue: "8 999 99 99",
-            type: "phone",
-            min: 10,
-            onBlur: onChangePhoneBind,
-        });
-
-        const InputEmail = new InputElement({
-            name: "email",
-            label: "Почта",
-            defValue: "ivanov2004@yandex.ru",
-            type: "email",
-            min: 3,
-            onBlur: onChangeEmailBind,
-        });
-
-        const InputLogin = new InputElement({
-            name: "login",
-            label: "Логин",
-            defValue: "Ivanov2004",
-            type: "text",
-            min: 3,
-            max: 20,
-            onBlur: onChangeLoginBind,
-        });
+        const onOpenChangerAvatarBind = this.onOpenChangerAvatar.bind(this);
+        const onCloseChangerAvatarBind = this.onCloseChangerAvatar.bind(this);
+        const onLoadAvatarBind = this.onLoadAvatar.bind(this);
+        const onOpenChangerPasswordBind = this.onOpenChangerPassword.bind(this);
+        const onCloseChangerPasswordBind = this.onCloseChangerPassword.bind(this);
+        const onSavePasswordBind = this.onSavePassword.bind(this);
 
         const InputPassword = new InputElement({
             name: "password",
@@ -99,7 +51,7 @@ export default class Profile extends Block {
             min: 8,
             max: 40,
             onBlur: onChangePasswordBind,
-        })
+        });
         const InputPasswordConfirm = new InputElement({
             name: "password_confirm",
             label: "Пароль(ещё раз)",
@@ -108,6 +60,19 @@ export default class Profile extends Block {
             min: 8,
             max: 40,
             onBlur: onChangePasswordConfirmBind,
+        });
+
+        const ButtonChangeAvatar = new ButtonElement({
+            label: "Поменять аватар",
+            type: "change",
+            icon: "attach_file",
+            onClick: onOpenChangerAvatarBind,
+        });
+        const ButtonChangePassword = new ButtonElement({
+            label: "Поменять пароль",
+            type: "change",
+            icon: "password",
+            onClick: onOpenChangerPasswordBind,
         })
 
         const ButtonConfirmChange = new ButtonElement({
@@ -116,12 +81,25 @@ export default class Profile extends Block {
             icon: "save",
             onClick: onConfirmChangeBind,
         });
+        const ButtonConfirmChangePassword = new ButtonElement({
+            label: "Сохранить",
+            type: "submit",
+            icon: "save",
+            onClick: onSavePasswordBind,
+        });
         const ButtonCancel = new ButtonElement({
             label: "Отменить",
             type: "cancel",
             icon: "arrow_back",
             onClick: onCancelBind,
         });
+        const ButtonCancelChangePassword = new ButtonElement({
+            label: "Отменить",
+            type: "cancel",
+            icon: "arrow_back",
+            onClick: onCloseChangerPasswordBind,
+        });
+
         const ButtonChange = new ButtonElement({
             label: "Изменить",
             type: "change",
@@ -133,18 +111,119 @@ export default class Profile extends Block {
             type: "exit",
             icon: "logout",
             onClick: onExitBind,
-        })
+        });
+        const BackLink = new Link({
+            class: styles.back,
+            text: "К чатам",
+            iconName: "chevron_left",
+            onClick: () => window.router.go(CONSTS.messenger),
+        });
 
-
-        this.props.avatar = '';
-        this.props.display_name = '';
-        this.props.first_name = '';
-        this.props.second_name = '';
-        this.props.email = '';
-        this.props.phone = '';
-        this.props.login = '';
+        this.props.user = window.store.getState().user;
+        this.props.avatar = this.props.user.avatar;
+        this.props.display_name = this.props.user.display_name;
+        this.props.first_name = this.props.user.first_name;
+        this.props.second_name = this.props.user.second_name;
+        this.props.email = this.props.user.email;
+        this.props.phone = this.props.user.phone;
+        this.props.login = this.props.user.login;
         this.props.password = '';
         this.props.isChange = false;
+
+        const InputAvatar = new InputElement({
+            name: "avatar",
+            label: "Аватар",
+            type: "file",
+            onChange: onLoadAvatarBind,
+        });
+
+        const InputDisplayName = new InputElement({
+            name: "display_name",
+            label: "Отображаемое имя",
+            value: this.props.display_name,
+            defValue: "Ivanchella",
+            type: "text",
+            onBlur: onChangeDisplayNameBind,
+        });
+
+        const InputFirstName = new InputElement({
+            name: "first_name",
+            label: "Имя",
+            value: this.props.first_name,
+            defValue: "Ivan",
+            type: "text",
+            onBlur: onChangeFirstNameBind,
+        });
+
+        const InputSecondName = new InputElement({
+            name: "second_name",
+            label: "Фамилия",
+            value: this.props.second_name,
+            defValue: "Ivanov",
+            type: "text",
+            onBlur: onChangeSecondNameBind,
+        });
+
+        const InputPhone = new InputElement({
+            name: "phone",
+            label: "Номер телефона",
+            value: this.props.phone,
+            defValue: "8 999 99 99",
+            type: "phone",
+            min: 10,
+            onBlur: onChangePhoneBind,
+        });
+
+        const InputEmail = new InputElement({
+            name: "email",
+            label: "Почта",
+            value: this.props.email,
+            defValue: "ivanov2004@yandex.ru",
+            type: "email",
+            min: 3,
+            onBlur: onChangeEmailBind,
+        });
+
+        const InputLogin = new InputElement({
+            name: "login",
+            label: "Логин",
+            value: this.props.login,
+            defValue: "Ivanov2004",
+            type: "text",
+            min: 3,
+            max: 20,
+            onBlur: onChangeLoginBind,
+        });
+
+        const FieldFirstName = new Field({
+            name: "Имя",
+            value: this.props.first_name || "-",
+        });
+        const FieldSecondName = new Field({
+            name: "Фамилия",
+            value: this.props.second_name || "-",
+        });
+        const FieldDisplayName = new Field({
+            name: "Отображаемый ник",
+            value: this.props.display_name || "-",
+        });
+        const FieldNumberPhone = new Field({
+            name: "Номер телефона",
+            value: this.props.phone || "-",
+        });
+        const FieldEmail = new Field({
+            name: "Почта",
+            value: this.props.email || "-",
+        });
+        const AvatarBlock = new Avatar({
+            img: window.store?.getState()?.user?.avatar || '',
+        })
+        const ChangeAvatarBlock = new ChangeAvatar({
+            onCancel: onCloseChangerAvatarBind,
+        });
+        const ChangePasswordBlock = new ChangePassword({
+            onCancel: onCloseChangerPasswordBind,
+        })
 
         this.children = {
             ...this.children,
@@ -161,10 +240,23 @@ export default class Profile extends Block {
             ButtonConfirmChange,
             ButtonChange,
             ButtonExit,
-        }
-    }
+            BackLink,
+            FieldFirstName,
+            FieldDisplayName,
+            FieldNumberPhone,
+            FieldEmail,
+            FieldSecondName,
+            ButtonChangeAvatar,
+            ButtonChangePassword,
+            ChangeAvatarBlock,
+            ButtonCancelChangePassword,
+            ButtonConfirmChangePassword,
+            AvatarBlock,
+            ChangePasswordBlock,
+        };
+    };
 
-    onChangeAvatar(e: Event) {
+    onLoadAvatar(e: Event) {
         const target = e.target as HTMLInputElement;
         const value = target.value;
 
@@ -239,18 +331,46 @@ export default class Profile extends Block {
 
     onExit(e: Event) {
         e.preventDefault();
-        console.log("Пользователь вышел...");
+
+        authService.logout();
     }
     onCancel(e: Event) {
         e.preventDefault();
         this.setProps({isChange: false});
     }
+
+    onOpenChangerAvatar(e: Event) {
+        e.preventDefault();
+        this.setProps({isChangeAvatar: true});
+    }
+    onCloseChangerAvatar(e: Event) {
+        e.preventDefault();
+        this.setProps({isChangeAvatar: false});
+    }
+
+    onOpenChangerPassword(e: Event) {
+        e.preventDefault();
+        this.setProps({isChangePassword: true});
+    }
+    onCloseChangerPassword(e: Event) {
+        e.preventDefault();
+        this.setProps({isChangePassword: false});
+    }
+    onSavePassword(e: Event) {
+        e.preventDefault();
+        // Проверка типа
+        // Загрузка через Api
+        console.log("Меняем пароль");
+        // Если успешно
+        this.setProps({isChangePassword: false});
+    }
+
     onChange(e: Event) {
         e.preventDefault();
         this.setProps({isChange: true});
     }
 
-    onConfirmChange(e: Event) {
+    async onConfirmChange(e: Event) {
         e.preventDefault();
         const inputs: UserInputs = {};
         const fieldsToValidate = [
@@ -260,14 +380,13 @@ export default class Profile extends Block {
             { name: 'display_name', validator: checkFirstSecondNames },
             { name: 'phone', validator: checkPhone },
             { name: 'login', validator: checkLogin },
-            { name: 'password', validator: checkPassword },
         ];
 
         let countChanges = 0;
         for (const field of fieldsToValidate) {
             if (this.props[field.name]) {
                 countChanges++;
-                const error = field.validator(this.props[field.name], this.props[field.name]);
+                const error = field.validator(this.props[field.name]);
                 if (error.errorMessage) {
                     this.setPropsForChildren(this.children[`Input${this.capitalizeFirstLetter(field.name)}`], error);
                     return;
@@ -280,30 +399,53 @@ export default class Profile extends Block {
             alert("Никакие данные не изменены");
             return;
         }
-        alert("Все данные введены верно, более подробная информация в консоли");
-        console.log({
+        const data = {
             first_name: this.props.first_name,
             second_name: this.props.second_name,
+            display_name: this.props.display_name,
             email: this.props.email,
             phone: this.props.phone,
             login: this.props.login,
-            password: this.props.password,
-        });
+        };
+        await userService.changeProfile(data);
+        this.setProps({ user: window.store.getState().user, isChange: false })
     }
     capitalizeFirstLetter(string: string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    componentDidUpdate(oldProps: Props, newProps: Props): boolean {
+        if (oldProps === newProps) {
+            return false;
+        }
+        this.setPropsForChildren(this.children.FieldFirstName, { value: newProps.user?.first_name || '' });
+        this.setPropsForChildren(this.children.FieldSecondName, { value: newProps.user?.second_name || ''});
+        this.setPropsForChildren(this.children.FieldNumberPhone, { value: newProps.user?.phone || ''});
+        this.setPropsForChildren(this.children.FieldEmail, { value: newProps.user?.email || ''});
+        this.setPropsForChildren(this.children.FieldDisplayName, { value: newProps.user?.display_name || ''});
+        if (oldProps.user?.avatar !== newProps.user?.avatar) {
+            this.setPropsForChildren(this.children.AvatarBlock, { img: newProps.user?.avatar });
+        }
+
+        return true;
     }
 
     render() {
         if (this.props.isChange) {
             return `
                 <div class=${styles.root}>
+                    {{#if isChangeAvatar}}
+                        {{{ ChangeAvatarBlock }}}
+                    {{/if }}
+                    {{#if isChangePassword}}
+                        {{{ ChangePasswordBlock }}}
+                    {{/if }}
                     <div class=${styles.profile}>
-                        <a class="${styles.back}" href="#" page="chats">К чатам {{> Icon name="chevron_left"}}</a>
+                        {{{ BackLink }}}
                         <form onsubmit="">
                             <div class=${styles.block}>
-                                <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
-                                {{{ InputAvatar }}}
+                                {{{ AvatarBlock }}}
+                                {{{ ButtonChangeAvatar }}}
                             </div>
                             <div class=${styles.block}>
                                 {{{ InputDisplayName }}}
@@ -315,9 +457,8 @@ export default class Profile extends Block {
                                 {{{ InputPhone }}}
                                 {{{ InputEmail }}}
                             </div>
-                            <div class=${styles.block}>
-                                {{{ InputPassword }}}
-                                {{{ InputPasswordConfirm }}}
+                            <div class="${styles.block}">
+                                {{{ ButtonChangePassword }}}
                             </div>
                             <div class="${styles.block}">
                                 {{{ ButtonCancel }}}
@@ -331,18 +472,18 @@ export default class Profile extends Block {
         return `
             <div class=${styles.root}>
                 <div class=${styles.profile}>
-                    <a class="${styles.back}" href="#" page="chats">К чатам {{> Icon name="chevron_left"}}</a>
+                    {{{ BackLink }}}
                     <div class=${styles.block}>
-                        <img src="/img/avatars/business-man-by-skyscraper.jpg" alt="Аватар"/>
+                        {{{ AvatarBlock }}}
                     </div>
                     <div class=${styles.block}>
-                        {{> Field name="Отображаемый ник" value="Егор"}}
+                        {{{ FieldDisplayName }}} 
                     </div>
                     <div class=${styles.block}>
-                        {{> Field name="Имя" value="Егор"}}
-                        {{> Field name="Фамилия" value="Ермаков"}}
-                        {{> Field name="Номер телефона" value="8 (999) 99 99 99"}}
-                        {{> Field name="Почта" value="ermakov@gmail.com"}}
+                        {{{ FieldFirstName }}}
+                        {{{ FieldSecondName }}}
+                        {{{ FieldNumberPhone }}}
+                        {{{ FieldEmail }}}
                     </div>
                     <div class="${styles.block}">
                         {{{ ButtonBack }}}
@@ -354,3 +495,18 @@ export default class Profile extends Block {
         `
     }
 }
+
+interface StateInterface {
+    isLoading: boolean;
+    changeProfileError: string;
+    user: UserDTOResponse;
+}
+const mapStateToProps = (state: StateInterface) => {
+    return {
+        isLoading: state.isLoading,
+        changeProfileError: state.changeProfileError,
+        user: state.user,
+    }
+}
+
+export default connect(mapStateToProps)(withRouter(Settings));

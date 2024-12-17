@@ -10,7 +10,18 @@ interface InputProps {
 
 class Input extends Block{
     constructor(props: InputProps) {
-        super(props)
+        super(props);
+    }
+    getValue(is?: string) {
+        const input = this.getContent() as HTMLInputElement;
+        if (is === 'file' && input.files) {
+            return input.files[0];
+        }
+        return input.value;
+    }
+    setValue(value: string) {
+        const input = this.getContent() as HTMLInputElement;
+        input.value = value;
     }
 
     render() {

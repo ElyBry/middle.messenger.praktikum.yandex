@@ -38,3 +38,9 @@
   @include var.center-block;
   @include var.button-back;
 }
+
+.error {
+  text-align: center;
+  color: var.$error-color;
+  font-size: var.$font-size-h4;
+}

@@ -1,42 +1,58 @@
-import styles from './listChats.module.scss';
-import Block from "../../core/Block.ts";
-import { Chats } from "../chats";
+import styles from './index.module.scss';
+import Block, {Props} from "../../core/Block.ts";
+import {ChatProps} from "../chats";
+import {Chats} from "../index.ts";
+import {connect} from "../../utils/Connect.ts";
 
-interface ChatProps {
-    id: number,
-    name: string,
-    lastMessage: string,
-    time: string,
-    isOnline: boolean,
-    avatar: string,
-    isTyping: boolean,
-    setProps?: ({  }) => void,
-    props?: {id: number},
-}
 type ChatsProps = ChatProps[];
 
 interface ListElementProps {
     chatsList: ChatsProps,
-    onClick?: (event: FocusEvent) => void,
+    onSelectChat?: (event: { }) => void,
 }
 
-export class ListChats extends Block {
+class ListChats extends Block {
     constructor(props: ListElementProps) {
         super({
             ...props,
+            openChatId: -1,
             Chats: props.chatsList.map(
-                (chatProps) =>
+                (chatProps: ChatProps) =>
                     new Chats({
                         ...chatProps,
+                        id: chatProps.id,
+                        title: chatProps.title,
                         onClick: () => {
-                            this.setProps({ openChatId: chatProps.id });
-                            this.setProps({ openChat: true});
+                            if (props.onSelectChat) {
+                                props.onSelectChat(chatProps)
+                            }
                         },
                     }),
             ),
         });
     }
 
+    componentDidUpdate(oldProps?: Props, newProps?: Props): boolean {
+        if (oldProps === newProps) {
+            return false;
+        }
+
+        if (newProps && newProps.chats) {
+            this.children.Chats = newProps.chats.map(
+                (chatProps: any) =>
+                    new Chats({
+                        ...chatProps,
+                        onClick: () => {
+                            if (this.props.onSelectChat) {
+                                this.props.onSelectChat(chatProps)
+                            }
+                        },
+                    }),
+            )
+        }
+
+        return true;
+    }
 
     render() {
         const { openChatId } = this.props;
@@ -65,3 +81,13 @@ export class ListChats extends Block {
         `
     }
 }
+interface StateInterface {
+    chats: {}
+}
+const mapStateToProps = (state: StateInterface) => {
+    return {
+        chats: state.chats,
+    }
+}
+
+export default connect(mapStateToProps)(ListChats as unknown as new (newProps: Props) => Block<Props>);

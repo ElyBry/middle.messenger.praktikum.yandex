@@ -1,11 +1,16 @@
-import { InputElement, ButtonElement } from "../components";
+import {InputElement, ButtonElement, Link, Spinner} from "../components";
 import styles from '../scss/signInUp.module.scss';
 import Block from "../core/Block.ts";
 import validInputs from "../validators/validInputs.ts";
+import {withRouter} from "../routing/WithRouter.ts";
+import {CONSTS} from "../CONSTS.ts";
+import {connect} from "../utils/Connect.ts";
 
 const { checkLogin, checkEmail, checkFirstSecondNames, checkPhone, checkPassword } = validInputs;
 
-export default class SignUp extends Block {
+import * as authService from '../services/auth.ts'
+
+class SignUp extends Block {
     init() {
         const onChangeFirstNameBind = this.onChangeFirstName.bind(this);
         const onChangeSecondNameBind = this.onChangeSecondName.bind(this);
@@ -74,7 +79,7 @@ export default class SignUp extends Block {
             max: 40,
             required: true,
             onBlur: onChangePasswordBind,
-        })
+        });
         const InputPasswordConfirm = new InputElement({
             name: "password_confirm",
             label: "Пароль(ещё раз)",
@@ -84,7 +89,13 @@ export default class SignUp extends Block {
             max: 40,
             required: true,
             onBlur: onChangePasswordConfirmBind,
-        })
+        });
+        const LinkBack = new Link({
+            text: "У меня уже есть аккаунт",
+            iconName: "chevron_left",
+            class: styles.exitIcon,
+            onClick: () => this.props.router.go(CONSTS.signIn),
+        });
 
         const ButtonRegister = new ButtonElement({
             label: "Войти",
@@ -92,6 +103,7 @@ export default class SignUp extends Block {
             icon: "login",
             onClick: onRegisterBind,
         });
+        const SpinnerElement = new Spinner();
 
         this.props.first_name = '';
         this.props.second_name = '';
@@ -109,7 +121,9 @@ export default class SignUp extends Block {
             InputPasswordConfirm,
             InputLogin,
             InputPassword,
-            ButtonRegister
+            ButtonRegister,
+            LinkBack,
+            SpinnerElement,
         }
     }
 
@@ -190,20 +204,24 @@ export default class SignUp extends Block {
             return ;
         }
 
-        alert("Все данные введены верно, более подробная информация в консоли");
-        console.log({
+        const data = {
             first_name: this.props.first_name,
             second_name: this.props.second_name,
-            email: this.props.email,
-            phone: this.props.phone,
             login: this.props.login,
+            email: this.props.email,
             password: this.props.password,
-        });
+            phone: this.props.phone,
+        }
+
+        authService.signUp(data)
     }
 
     render() {
         return `
             <div class=${styles.root}>
+                {{#if isLoading}}
+                    {{{ SpinnerElement }}}
+                {{/if}}
                 <div class=${styles.auth}>
                     <h1>Регистрация</h1>
                     <form onsubmit="">
@@ -220,9 +238,27 @@ export default class SignUp extends Block {
                             {{{ ButtonRegister }}}
                         </div>
                     </form>
-                    <a class="${styles.exitIcon}" href="#" page="signIn">У меня уже есть аккаунт {{> Icon name="chevron_left"}}</a>
+                    <div class=${styles.error}>
+                        {{#if signUpError }}
+                            <p>{{ signUpError }}</p>
+                        {{/if}}
+                    </div>
+                    {{{ LinkBack }}}
                 </div>
             </div>
         `
     }
 }
+
+interface StateInterface {
+    isLoading: boolean;
+    signUpError: string;
+}
+const mapStateToProps = (state: StateInterface) => {
+    return {
+        isLoading: state.isLoading,
+        signUpError: state.signUpError,
+    }
+}
+
+export default connect(mapStateToProps)(withRouter(SignUp));

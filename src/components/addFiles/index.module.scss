@@ -1,0 +1,13 @@
+@use "../../scss/var";
+
+.bubble {
+  background: var.$black;
+  padding: var.$padding-elements;
+  border-radius: var.$border-radius-elements;
+  opacity: 0.9;
+  color: white;
+  .item {
+    width: 100%;
+    height: 100%;
+  }
+}

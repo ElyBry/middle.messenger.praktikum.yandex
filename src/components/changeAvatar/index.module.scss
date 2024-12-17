@@ -1,0 +1,42 @@
+@use "../../scss/var";
+
+.module {
+  position: absolute;
+  z-index: 10;
+  background-color: white;
+  overflow: hidden;
+  overflow-y: auto;
+  max-height: 70vh;
+
+  @include var.box-shadow;
+
+  padding: var.$padding-page;
+  border-radius: var.$border-radius-elements;
+  .inputModule {
+    .users {
+      margin-bottom: var.$margin-elements;
+    }
+    h3 {
+      margin-top: 5px;
+    }
+    h4 {
+      text-align: center;
+    }
+    .input {
+      @include var.center-block;
+
+      margin-bottom: var.$margin-elements;
+    }
+    .error {
+      color: var.$error-color;
+
+      @include var.center-block;
+    }
+    .actionsBack {
+      position: absolute;
+    }
+    .actions {
+      @include var.center-block;
+    }
+  }
+}
