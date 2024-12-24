@@ -9,7 +9,7 @@ describe('Тесты функции addMessage', () => {
         const newMessage: MessageResponse = { chat_id: 1, content: 'Hello', file: null, id: 1, is_read: false, time: '2023-10-10T10:00:00Z', type: 'text', user_id: 1 };
         const result = addMessage(messages, newMessage);
         expect(result).to.eql([newMessage]);
-    })
+    });
 
     it('должен добавлять одно новое сообщение в существующий массив', () => {
         const messages: Array<MessageResponse> = [

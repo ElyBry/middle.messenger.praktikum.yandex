@@ -121,22 +121,7 @@ export default abstract class Block<T extends Props = Props> {
     }
 
     componentDidUpdate(oldProps?: Props, newProps?: Props): boolean {
-        return oldProps !== newProps;
-    }
 
-    private _getChildrenAndProps(propsAndChildren: Props) {
-        const children: Children = {};
-        const props: Props = {};
-
-        const processValue = (value: Block | Block[] | Props, key: string) => {
-            if (Array.isArray(value)) {
-                if (value.every(item => item instanceof Block)) {
-                    children[key] = value;
-                } else {
-                    props[key] = value;
-                }
-            } else if (value instanceof Block) {
-                children[key] = value;
             } else {
                 props[key] = value;
             }
