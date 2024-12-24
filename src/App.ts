@@ -36,7 +36,7 @@ window.store = new Store({
     tokenChat: '',
 });
 
-window.router = new Router(CONSTS.APP_ROOT);
+window.router = new Router(CONSTS.appRoot);
 const check = await checkLoginUser();
 window.router.use(CONSTS.signIn, Pages.SignIn)
     .use(CONSTS.signUp, Pages.SignUp)

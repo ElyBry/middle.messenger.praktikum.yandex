@@ -23,7 +23,7 @@ type HTTPMethod = (url: string, options?: Options) => Promise<unknown>;
 class HTTPTransport {
     private apiUrl = "";
     constructor(apiUrl: string) {
-        this.apiUrl = `${CONSTS.API_URL}${apiUrl}`;
+        this.apiUrl = `${CONSTS.apiUrl}${apiUrl}`;
     }
     get: HTTPMethod = (url, options = {}) => {
         return this._request(url, {...options, method: METHODS.GET}, options.timeout);

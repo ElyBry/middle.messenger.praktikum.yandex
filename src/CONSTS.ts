@@ -4,9 +4,9 @@ export enum CONSTS {
     settings = '/settings',
     messenger = '/messenger',
     servError = '/500',
-    APP_ROOT = "#app",
+    appRoot = "#app",
     offset = 10,
     limit = 10,
-    API_URL = 'https://ya-praktikum.tech/api/v2/',
-    WS_URL = 'wss://ya-praktikum.tech/ws/chats/',
+    apiUrl = 'https://ya-praktikum.tech/api/v2/',
+    webSocketUrl = 'wss://ya-praktikum.tech/ws/chats/',
 }

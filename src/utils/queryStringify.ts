@@ -1,7 +1,7 @@
 type StringIndexed = Record<string, any>;
 
 function queryStringify(data: StringIndexed, prevKey = ''): string | never {
-    if (typeof data !== "object") {
+    if (data === null || typeof data !== "object") {
         throw new Error('input must be an object');
     }
     let str = '';
@@ -16,7 +16,11 @@ function queryStringify(data: StringIndexed, prevKey = ''): string | never {
         if (val !== null && typeof val === 'object') {
             if (Array.isArray(val)) {
                 for (let j = 0; j < val.length; j++) {
-                    str += `${fullKey}[${j}]=${val[j]}&`;
+                    if (typeof val[j] === 'object') {
+                        str += queryStringify(val[j], `${fullKey}[${j}]`);
+                    } else {
+                        str += `${fullKey}[${j}]=${val[j]}&`;
+                    }
                 }
             } else {
                 str += queryStringify(val, fullKey);

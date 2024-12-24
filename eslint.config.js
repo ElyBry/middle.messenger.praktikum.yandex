@@ -6,9 +6,7 @@ const config = [
     {
         languageOptions: {
             parser: typescriptEslintParser,
-            globals: {
-
-            },
+            globals: {},
         },
         plugins: {
             '@typescript-eslint': typescriptEslintPlugin,

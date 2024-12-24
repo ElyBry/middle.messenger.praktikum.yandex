@@ -12,7 +12,7 @@ export default class WSChat {
         this._userId = userId;
         this._chatId = chatId;
         this._tokenValue = tokenValue;
-        this._socket = new WebSocket(`${CONSTS.WS_URL}${userId}/${chatId}/${tokenValue}`);
+        this._socket = new WebSocket(`${CONSTS.webSocketUrl}${userId}/${chatId}/${tokenValue}`);
 
         this._addAllListeners();
     }
@@ -58,7 +58,7 @@ export default class WSChat {
         console.log("Попытка переподключения");
 
         setTimeout(() => {
-            this._socket = new WebSocket(`${CONSTS.WS_URL}${this._userId}/${this._chatId}/${this._tokenValue}`);
+            this._socket = new WebSocket(`${CONSTS.webSocketUrl}${this._userId}/${this._chatId}/${this._tokenValue}`);
             this._addCloseListener();
             this._socket.addEventListener('open', () => {
                 console.log("Соединение восстановлено");
@@ -121,7 +121,7 @@ export default class WSChat {
         this._userId = userId;
         this._chatId = chatId;
         this._tokenValue = tokenValue;
-        this._socket = new WebSocket(`${CONSTS.WS_URL}${userId}/${chatId}/${tokenValue}`);
+        this._socket = new WebSocket(`${CONSTS.webSocketUrl}${userId}/${chatId}/${tokenValue}`);
         this._addAllListeners();
         this.getOldMessages();
     }

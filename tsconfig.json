@@ -22,5 +22,14 @@
     "sourceMap": true,
     "strictNullChecks": true
   },
-  "include": ["src"]
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    // It is faster to skip typechecking.
+    // Remove if you want ts-node to do typechecking.
+    "transpileOnly": true
+  },
+  "include": [
+    "src",
+    "tests"
+  ]
 }

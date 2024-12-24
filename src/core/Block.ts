@@ -157,7 +157,7 @@ export default abstract class Block<T extends Props = Props> {
         Object.assign(this.props, nextProps);
     };
 
-    get element() {
+    public get element() {
         return this._element;
     }
 
