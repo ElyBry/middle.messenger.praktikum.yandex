@@ -17,8 +17,8 @@
     "stylelint": "stylelint **/*.scss",
     "check": "eslint && stylelint **/*.scss",
     "start": "npm run build && npm run dev",
-    "prepare": "husky",
-    "pre-commit": "npm run test && npm run check"
+    "prepare": "husky install",
+    "pre-commit": "npm-run-all test lint"
   },
   "engines": {
     "node": ">=16.0.0"
