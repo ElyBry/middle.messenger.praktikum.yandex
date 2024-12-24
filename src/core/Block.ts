@@ -146,6 +146,10 @@ export default abstract class Block<T extends Props = Props> {
             processValue(value, key);
         });
 
+        return { children, props };
+    }
+
+    setProps = (nextProps: {}) => {
         if (!nextProps) {
             return;
         }

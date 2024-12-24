@@ -16,7 +16,8 @@
     "test": "mocha ",
     "stylelint": "stylelint **/*.scss",
     "check": "eslint && stylelint **/*.scss",
-    "start": "npm run build && npm run dev"
+    "start": "npm run build && npm run dev",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -48,10 +49,5 @@
     "lodash-es": "^4.17.21",
     "sass": "^1.80.5",
     "vite-plugin-handlebars": "^2.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm-run-all test check"
-    }
   }
 }
