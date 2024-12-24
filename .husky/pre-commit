@@ -1,0 +1,2 @@
+npm test // [!code hl]
+npm run foo // [!code hl]
