@@ -49,10 +49,5 @@
     "lodash-es": "^4.17.21",
     "sass": "^1.80.5",
     "vite-plugin-handlebars": "^2.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run test && npm run check"
-    }
   }
 }
