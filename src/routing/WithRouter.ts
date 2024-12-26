@@ -8,5 +8,5 @@ export function withRouter<T extends Props>(WrappedBlock: new (props: T) => Bloc
                 router: window.router,
             });
         }
-    }
+    } as new (props: T) => Block<T>;
 }

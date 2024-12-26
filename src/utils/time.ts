@@ -9,6 +9,9 @@ const formatTime = (dateString: string, isChat?: boolean) => {
         if (date.toDateString() === now.toDateString()) {
             return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
+        if (date < startOfWeek) {
+            return date.toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' });
+        }
         return date.toLocaleDateString([], { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
     }
     if (date.toDateString() === now.toDateString()) {
@@ -18,7 +21,9 @@ const formatTime = (dateString: string, isChat?: boolean) => {
     if (date >= startOfWeek) {
         return date.toLocaleDateString([], { weekday: 'long' });
     }
-
+    if (date < startOfWeek) {
+        return date.toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' });
+    }
     return date.toLocaleDateString([], { day: 'numeric', month: 'long' });
 }
 

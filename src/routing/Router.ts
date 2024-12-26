@@ -30,6 +30,10 @@ class Router {
         return this;
     }
 
+    get currentRoute(): RouteInterface {
+        return this._currentRoute;
+    }
+
     start() {
         window.onpopstate = ((event: PopStateEvent) => {
             const target = event.target as Window;
